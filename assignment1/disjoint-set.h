@@ -1,18 +1,13 @@
 #include <stdbool.h>
 
-typedef struct forest {
-    void *;
-} forest;
+typedef struct element {
+    struct element *parent;
+    int rank;
+    void *data;
+} forest_node;
 
-forest *make_forest();
-void burn_forest(forest *);
-
-forest *make_set(void *x);
-
-forest *unionize(void *x, void *y);
-
-void *find(void *x);
-
-
+element *makeset(void *data);
+element *unionize(forest *f, element *x, element *y);
+element *find(element *f, element *x);
 
 
