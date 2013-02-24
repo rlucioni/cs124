@@ -7,6 +7,7 @@ typedef struct {
 //    Returns a pointer to an empty graph
 graph *empty_graph(int numpoints);
 void free_graph(graph *g);
+int graph_size(graph *g);
 
 // generate_graph(dimensions, numpoints)
 //    Returns a pointer to a graph of w/ numpoints vertices (nodes). 

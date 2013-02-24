@@ -10,6 +10,7 @@ float kruskals(graph *input_graph) {
     // sort edges of input_graph by weight
 
     // for each vertex in input_graph, makeset containing vertex
+    forest *f = makeforest(graph_size(g));
     
     // cycle through edges in input_graph
 

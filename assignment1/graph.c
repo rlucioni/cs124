@@ -28,6 +28,10 @@ void free_graph(graph *g) {
     free(g);
 }
 
+int graph_size(graph *g) {
+    return g->num_nodes;
+}
+
 graph *generate_graph0(int numpoints) {
     graph *g = empty_graph(numpoints);
     for (int i = 0; i < numpoints; ++i) {
