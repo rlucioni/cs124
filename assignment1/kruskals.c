@@ -51,18 +51,6 @@ float kruskals(graph *input_graph) {
     return mst_weight;
 }
 
-graph* sum_edges(input_graph*) {
-    int sum = 0;
-
-    // loop through edges in input_graph, add to sum
-
-    return sum;
-}
-
-int run_tests() {
-    
-}
-
 int main(int argc, char **argv) {
     // process command line arguments
     if (argc != 5) {
@@ -73,6 +61,9 @@ int main(int argc, char **argv) {
     int numpoints = atoi(argv[2]);
     int numtrials = atoi(argv[3]);
     int dimension = atoi(argv[4]);
+
+    if (flag == 1)
+	run_tests();
     
     // run trials
     float running_total = 0;

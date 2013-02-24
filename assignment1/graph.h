@@ -3,6 +3,11 @@ typedef struct {
     int num_nodes;
 } graph;
 
+typedef struct {
+    graph *graph;
+    float mst_weight;
+} test_graph;
+
 // generate_graph(dimensions, numpoints)
 //    Returns a pointer to a graph of w/ numpoints vertices (nodes). 
 //    For explanation of the dimensions variable see assignment 
@@ -18,3 +23,4 @@ int graph_size(graph *g);
 float graph_get_edge(graph *g, int n1, int n2);
 
 int graph_run_tests();
+test_graph *graph_test_graphs();

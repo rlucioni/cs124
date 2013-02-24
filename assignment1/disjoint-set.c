@@ -48,3 +48,52 @@ int ds_unionize(ds_forest *f, int x, int y) {
     return ds_link(f, ds_find(f, x), ds_find(f, y));
 }
 
+int ds_run_tests() {
+    int nodes = 12;
+    ds_forest *f = ds_make_forest(nodes);
+
+    // makeset
+    for (int i = 0; i < nodes; ++i) {
+	ds_makeset(f, i);
+	assert(f->rank[i] == 0);
+	assert(f->p[i] == 0);
+
+	// find (rank 0)
+	assert(i == ds_find(f, i));
+    }
+    // link (roots)
+    for (int i = 0; i < nodes; i += 2) {
+	ds_link(f, i, i + 1);
+	assert(f->p[i] == 1);
+	assert(f->p[i + 1] == 1);
+	assert(f->rank[i] == 1);
+	assert(f->rank[i + 1] == 0);
+
+	// find (rank 1 and 0) - no side effects
+	assert(i == ds_find(f, i));
+	assert(i == ds_find(f, i + 1));
+    }
+    // unionize (root & root)
+    ds_unionize(f, 0, 2);
+    assert(f->p[0] == 0);
+    assert(f->p[1] == 0);
+    assert(f->p[2] == 0);
+    assert(f->p[3] == 2);
+    assert(f->rank[0] == 2);
+
+    // unionize (child & child)
+    ds_unionize(f, 5, 7);
+    assert(f->p[4] == 4);
+    assert(f->p[5] == 4);
+    assert(f->p[6] == 4);
+    assert(f->p[7] == 6);
+    assert(f->rank[4] == 2);
+
+    // unionize (root & child)
+    ds_unionize(f, 8, 11);
+    assert(f->p[8] == 8);
+    assert(f->p[9] == 8);
+    assert(f->p[10] == 8);
+    assert(f->p[11] == 10);
+    assert(f->rank[8] == 2);
+}

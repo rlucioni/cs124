@@ -10,3 +10,4 @@ void ds_makeset(ds_forest *f, int x);
 int ds_find(ds_forest *f, int x);
 int ds_link(ds_forest *f, int x, int y);
 int ds_unionize(ds_forest *f, int x, int y);
+int ds_run_tests();
