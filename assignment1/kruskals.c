@@ -32,22 +32,30 @@ float prims(graph *g) {
 
 
 // Kruskal's returns an adjacency matrix of the MST, indexed by node
-
 float kruskals(graph *input_graph) {
-    // initialize new graph - empty
+    // our X is a summation of the weights - we asked about this on Piazza
     float mst_weight = 0;
 
-    // sort edges of input_graph by weight
+    // sort edges of input_graph by weight <- side effect
+    graph_edge_sort(input_graph->list);
 
-    // for each vertex in input_graph, makeset containing vertex
-    forest *f = makeforest(graph_size(g));
+    // make space for the vertex sets
+    forest *f = makeforest(input_graph->num_nodes);
     
-    // cycle through edges in input_graph
+    // for each vertex in input_graph, makeset containing vertex
+    for (int n = 0; n < input_graph->num_nodes; n++)
+        ds_makeset(f, n);
 
-        // if endpoints not in the same vertex set, union the edge with edges in output_graph
-        
-        // union the endpoint sets
-        
+    // cycle through edges in input_graph
+    for (int e = 0; e < input_graph->num_edges; e++) {
+        int node_u = input_graph->list[e].u;
+        int node_v = input_graph->list[e].v;
+        if ds_find(f, node_u) == ds_find(f, node_v) {
+            mst_weight += mst_weight + input_graph->list[e].weight
+            ds_union(f, node_u, node_v);
+        }
+    }
+
     return mst_weight;
 }
 
