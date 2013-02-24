@@ -1,5 +1,34 @@
 #include "graph.h"
+#include "disjoint-set.h"
+#include "heap.h"
 #include <stdio.h>
+
+float prims(graph *g) {
+    int s;
+    float mst_weight = 0;
+    int num_vertices = graph_size(g);
+    float dist[num_vertices];
+    float prev[num_vertices];
+    int S[num_vertices];
+    
+
+    heap *h = make_heap();
+    insert(h, s, 0);
+    for (int i = 0; i < num_vertices; ++i) {
+	dist[i] = -1;
+	prev[i] = NULL;
+    }
+    dist[s] = 0;
+    while (size(h) > 0) {
+	int v = deletemin(h);
+	S[v] = 1;
+	for (int w = 0; w 
+    }
+    
+
+    return mst_weight;
+}
+
 
 // Kruskal's returns an adjacency matrix of the MST, indexed by node
 

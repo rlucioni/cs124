@@ -82,13 +82,3 @@ float get_edge(graph *g, int n1, int n2) {
     if (n2 > n1) SWAP(n1, n2);
     return g->adj_matrix[n1][n2];
 }
-
-void add_edge(graph *g, int n1, int n2, float weight) {
-    if (n2 > n1) SWAP(n1, n2);
-    g->adj_matrix[n1][n2] = weight;
-}
-
-void delete_edge(graph *g, int n1, int n2) {
-    if (n2 > n1) SWAP(n1, n2);
-    g->adj_matrix[n1][n2] = -1;
-}
