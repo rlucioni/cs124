@@ -5,6 +5,9 @@
 
 #define RAND_FLOAT() (rand() / RAND_MAX)
 #define SQUARE(x) ((x) * (x))
+#define SWAP(x,y) { a ^= b; b ^= a; a ^= b; }
+
+// only utilize bottom left of adjacency matrix 
 
 graph *empty_graph(int numpoints) {
     graph *g = (graph *) malloc(sizeof(graph));
@@ -28,7 +31,7 @@ void free_graph(graph *g) {
 graph *generate_graph0(int numpoints) {
     graph *g = empty_graph(numpoints);
     for (int i = 0; i < numpoints; ++i) {
-	for (int j = 0; j < numpoints; ++j) {
+	for (int j = 0; j <=i; ++j) {
 	    g->adj_matrix[i][j] = RAND_FLOAT();
 	}
     }
@@ -45,7 +48,7 @@ graph *generate_euclidean(int dimensions, int numpoints) {
 	}
     }
     for (int i = 0; i < numpoints; ++i) {
-	for (int j = 0; j < numpoints; ++j) {
+	for (int j = 0; j <= i; ++j) {
 	    float distance = 0;
 	    for (int d = 0; d < dimensions; ++d) {
 		distance += SQUARE(ps[i][d] - ps[j][d]);
@@ -72,13 +75,16 @@ graph *generate_graph(int dimensions, int numpoints) {
 }
 
 float get_edge(graph *g, int n1, int n2) {
+    if (n2 > n1) SWAP(n1, n2);
     return g->adj_matrix[n1][n2];
 }
 
 void add_edge(graph *g, int n1, int n2, float weight) {
+    if (n2 > n1) SWAP(n1, n2);
     g->adj_matrix[n1][n2] = weight;
 }
 
 void delete_edge(graph *g, int n1, int n2) {
+    if (n2 > n1) SWAP(n1, n2);
     g->adj_matrix[n1][n2] = -1;
 }
