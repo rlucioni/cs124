@@ -2,6 +2,7 @@
 #include "disjoint-set.h"
 #include "heap.h"
 #include <stdio.h>
+#include <assert.h>
 
 float prims(graph *g) {
     int s;
@@ -22,7 +23,7 @@ float prims(graph *g) {
     while (size(h) > 0) {
 	int v = deletemin(h);
 	S[v] = 1;
-	for (int w = 0; w 
+
     }
     
 
@@ -56,6 +57,10 @@ graph* sum_edges(input_graph*) {
     // loop through edges in input_graph, add to sum
 
     return sum;
+}
+
+int run_tests() {
+    
 }
 
 int main(int argc, char **argv) {

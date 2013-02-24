@@ -1,7 +1,11 @@
 #include "disjoint-set.h"
+#ifndef INC_ASSERT_H
+#define INC_ASSERT_H
+#include <assert.h>
+#endif /* INC_HEADER_H */
 
-forest *makeforest(int size) {
-    forest *f = (forest *) malloc(sizeof(forest));
+ds_forest *ds_makeforest(int size) {
+    ds_forest *f = (ds_forest *) malloc(sizeof(ds_forest));
     f->p = (int *) malloc(sizeof(int) * size);
     f->rank = (int *) malloc(sizeof(int) * size);
     memset(f->p, -1, sizeof(int) * size);
@@ -10,25 +14,25 @@ forest *makeforest(int size) {
     return f;
 }
 
-void burnforest(forest *f) {
+void ds_burnforest(ds_forest *f) {
     free(f->p);
     free(f->rank);
     free(f);
 }
 
-void makeset(forest *f, int x) {
+void ds_makeset(ds_forest *f, int x) {
     f->p[x] = x;
     rank[x] = 0;
 }
 
-int find(forest *f, int x) {
+int ds_find(ds_forest *f, int x) {
     if (x != f->p[x]) {
-	f->p[x] = find(f->p[x]);
+	f->p[x] = ds_find(f->p[x]);
     }
     return f->p[x];
 }
 
-int link(forest *f, int x, int y) {
+int ds_link(ds_forest *f, int x, int y) {
     if (f->rank[x] > f->rank[y]) {
 	int temp = x;
 	x = y;
@@ -40,6 +44,7 @@ int link(forest *f, int x, int y) {
     return y;
 }
 
-int unionize(forest *f, int x, int y) {
-    return link(f, find(f, x), find(f, y));
+int ds_unionize(ds_forest *f, int x, int y) {
+    return ds_link(f, ds_find(f, x), ds_find(f, y));
 }
+
