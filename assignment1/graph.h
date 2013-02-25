@@ -11,7 +11,7 @@ typedef struct {
 } graph;
 
 typedef struct {
-    graph *graph;
+    graph graph;
     float mst_weight;
 } test_graph;
 

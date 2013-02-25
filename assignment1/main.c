@@ -9,10 +9,10 @@ float kruskals(graph *input_graph) {
     float mst_weight = 0;
 
     // sort edges of input_graph by weight <- side effect
-    graph_edge_sort(input_graph->list);
+    graph_edge_sort(input_graph);
 
     // make space for the vertex sets
-    forest *f = makeforest(input_graph->num_nodes);
+    ds_forest *f = ds_makeforest(input_graph->num_nodes);
     
     // for each vertex in input_graph, makeset containing vertex
     for (int n = 0; n < input_graph->num_nodes; n++)
@@ -22,8 +22,8 @@ float kruskals(graph *input_graph) {
     for (int e = 0; e < input_graph->num_edges; e++) {
         int node_u = input_graph->list[e].u;
         int node_v = input_graph->list[e].v;
-        if ds_find(f, node_u) == ds_find(f, node_v) {
-            mst_weight += mst_weight + input_graph->list[e].weight
+        if (ds_find(f, node_u) == ds_find(f, node_v)) {
+            mst_weight += input_graph->list[e].weight;
             ds_union(f, node_u, node_v);
         }
     }
@@ -46,7 +46,7 @@ int main(int argc, char **argv) {
         test_graph *test_array = graph_test_graphs();
         int length = sizeof(test_array)/sizeof(test_array[0]);
         for (int n = 0; n < length; n++) { 
-            if test_array[n]->mst_weight == kruskals(test_array[n]->graph)
+            if (test_array[n].mst_weight == kruskals(&test_array[n].graph))
                 printf("TEST %d: PASS", n);
             else {
                 printf("TEST %d: FAIL", n);
@@ -61,7 +61,7 @@ int main(int argc, char **argv) {
        return graph_run_tests();
     }
 
-    if numpoints <= 0 {
+    if (numpoints <= 0) {
         fprintf(stderr, "No tree exists for a graph with %d vertices", numpoints);
         exit(EXIT_FAILURE);
     }
@@ -69,9 +69,9 @@ int main(int argc, char **argv) {
     // run trials
     float running_total = 0;
     for (int i = 0; i < numtrials; ++i) {
-	    graph *g = generate_graph(dimension, numpoints);
-	    running_total += kruskals(g);
-	    free_graph(g);
+	graph *g = graph_generate(dimension, numpoints);
+	running_total += kruskals(g);
+	graph_free(g);
     }
 
     printf("%f %d %d %d\n", running_total / numpoints, numpoints, numtrials, dimension);
