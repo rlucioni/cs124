@@ -3,12 +3,12 @@
 #include <time.h>
 #include <math.h>
 #include <string.h>
+#include <stdio.h>
 #ifndef INC_ASSERT_H
 #define INC_ASSERT_H
 #include <assert.h>
 #endif
 
-#define RAND_FLOAT() (rand() / RAND_MAX)
 #define SQUARE(x) ((x) * (x))
 #define SWAP(x,y) { a ^= b; b ^= a; a ^= b; }
 #define MIN(x,y) (((x) <= (y)) ? (x) : (y))
@@ -21,17 +21,18 @@ graph *graph_generate_0(int numpoints) {
     graph *g = (graph *) malloc(sizeof(graph));
     g->num_nodes = numpoints;
     g->num_edges = (numpoints - 1) * numpoints / 2;
-    g->list = malloc(sizeof(edge) * g->num_edges);
-    
-    for (int i = 0; i < numpoints; ++i) {
-	for (int j = 0; j <=i; ++j) {
-	    if (i != j) {
-		edge e = { .u = i, .v = j, .weight = RAND_FLOAT() };
-		g->list[i] = e;
-	    }
+    g->list = (edge *) malloc(sizeof(edge) * g->num_edges);
+
+    int e = 0;
+    for (int i = 1; i < numpoints; ++i) {
+	for (int j = 0; j < i; ++j) {
+	    g->list[e].u = i;
+	    g->list[e].v = j;
+	    g->list[e].weight = (float) rand() / RAND_MAX;
+	    ++e;
 	}
     }
-    
+
     return g;
 }
 
@@ -44,7 +45,7 @@ graph *graph_generate_euclidean(int dimensions, int numpoints) {
     float ps[numpoints][dimensions]; // array of points, each of dimensions dimensions
     for (int i = 0; i < numpoints; ++i) {
 	for (int d = 0; d < dimensions; ++d) {
-	    ps[i][d] = RAND_FLOAT();
+	    ps[i][d] = (float) rand() / RAND_MAX;
 	}
     }
     for (int i = 0; i < numpoints; ++i) {
@@ -108,6 +109,14 @@ void graph_edge_sort(graph *g) {
 	    graph_edge_merge(g->list, i, i + m, MIN(i + 2 *m, g->num_edges));
 	}
     }
+}
+
+void graph_print(graph *g) {
+    printf("# of Nodes: %d\n", g->num_nodes);
+    printf("# of Edges: %d\n", g->num_edges);
+    for (int i = 0; i < g->num_edges; ++i)
+	printf("\t(%d, %d) : %f\n", g->list[i].u, g->list[i].v, g->list[i].weight);
+    printf("\n");
 }
 
 int test_graph_generate_0() {

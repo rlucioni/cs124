@@ -25,3 +25,4 @@ void graph_edge_sort(graph *g);
 
 int graph_run_tests();
 test_graph *graph_test_graphs();
+void graph_print(graph *g);

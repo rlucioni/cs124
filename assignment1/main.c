@@ -6,11 +6,11 @@
 // Kruskal's returns an adjacency matrix of the MST, indexed by node
 float kruskals(graph *input_graph) {
     // our X is a summation of the weights - we asked about this on Piazza
-    float mst_weight = 0;
-
+    float mst_weight = 0.0;
+    graph_print(input_graph);
     // sort edges of input_graph by weight <- side effect
     graph_edge_sort(input_graph);
-
+    graph_print(input_graph);
     // make space for the vertex sets
     ds_forest *f = ds_makeforest(input_graph->num_nodes);
     
@@ -22,12 +22,12 @@ float kruskals(graph *input_graph) {
     for (int e = 0; e < input_graph->num_edges; e++) {
         int node_u = input_graph->list[e].u;
         int node_v = input_graph->list[e].v;
-        if (ds_find(f, node_u) == ds_find(f, node_v)) {
+        if (ds_find(f, node_u) != ds_find(f, node_v)) {
             mst_weight += input_graph->list[e].weight;
             ds_union(f, node_u, node_v);
         }
     }
-
+    printf("weight: %f\n", mst_weight);
     return mst_weight;
 }
 
@@ -46,6 +46,8 @@ int main(int argc, char **argv) {
         test_graph *test_array = graph_test_graphs();
 	int length = 4;
         for (int n = 0; n < length; n++) { 
+	    printf("actual: %f\n", test_array[n].mst_weight);
+	    printf("kruskals: %f\n", kruskals(&test_array[n].graph));
             if (test_array[n].mst_weight == kruskals(&test_array[n].graph))
                 printf("TEST %d: PASS\n", n);
             else {
@@ -72,6 +74,7 @@ int main(int argc, char **argv) {
     float running_total = 0;
     for (int i = 0; i < numtrials; ++i) {
 	graph *g = graph_generate(dimension, numpoints);
+	graph_print(g);
 	running_total += kruskals(g);
 	graph_free(g);
     }
