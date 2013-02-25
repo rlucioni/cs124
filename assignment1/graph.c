@@ -91,15 +91,15 @@ void graph_edge_merge(edge *list, int s1, int s2, int end) {
     memcpy(&right, list + s2, sizeof(edge) * r_size);
 
     int i, l, r;
-    for (i = s1, l = 0, r = 0; l < l_size && r < r_size; ++i)
+    for (i = s1, l = 0, r = 0; l < l_size && r < r_size; ++i) 
 	list[i] = (left[l].weight <= right[r].weight) ? left[l++] : right[r++];
     if (l < l_size) {
-	for (; i < end; ++i)
-	    list[i] = left[l++];
+	for (; i < end; ++i, ++l)
+	    list[i] = left[l];
     }
     else {
-	for (; i < end; ++i)
-	    list[i] = right[r++];
+	for (; i < end; ++i, ++r) 
+	    list[i] = right[r];
     }
 }
 
