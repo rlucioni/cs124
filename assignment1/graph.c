@@ -81,6 +81,49 @@ void graph_free(graph *g) {
     free(g);
 }
 
+
+int test_graph_generate_0() {
+    int num_nodes = 20;
+    graph *g = graph_generate_0(num_nodes);
+    assert(g->num_nodes == num_nodes);
+    assert(g->num_edges == (n - 1) * n / 2);
+
+    // each node should be attached to num_nodes - 1 edges
+    // keep array of nodes, and increment when touched by edge
+    // all edge lengths should be less than 1
+    int nodes[num_nodes] = { 0 };
+    for (int i = 0; i < g->num_edges; ++i) {
+	assert(g->list[i].weight <= 1);
+	assert(g->list[i].weight >= 0);
+	++nodes[g->list[i].u];
+	++nodes[g->list[i].v];
+    }
+    int edges_per_node = g->num_edges - 1;
+    for (int i = 0; i < num_nodes; ++i)
+	assert(nodes[i] == edges_per_node);
+}
+
+int test_graph_generate_euclidean() {
+    int num_nodes = 20;
+    for (int d = 2; d <= 4; ++d) {
+	graph *g = graph_generate_euclidean(d, num_nodes);
+	assert(g->num_nodes == num_nodes);
+	assert(g->num_edges == (n - 1) * n / 2);
+
+	int nodes[num_nodes] = { 0 };
+	float max_weight = sqrt(d);
+	for (int i = 0; i < g->num_edges; ++i) {
+	    assert(g->list[i].weight <= max_weight);
+	    assert(g->list[i].weight >= 0);
+	    ++nodes[g->list[i].u];
+	    ++nodes[g->list[i].v];
+	}
+	int edges_per_node = g->num_edges - 1;
+	for (int i = 0; i < num_nodes; ++i)
+	    assert(nodes[i] == edges_per_node);
+    }
+}
+
 void graph_edge_merge(edge *list, int min, int mid, int max) {
     int l_size = min - min + 1;
     int r_size = max - mid;
@@ -111,50 +154,58 @@ void graph_edge_sort(graph *g) {
     }
 }
 
-int test_graph_generate_0() {
-    int num_nodes = 20;
-    graph *g = graph_generate_0(num_nodes);
-    assert(g->num_nodes == num_nodes);
-    assert(g->num_edges == (n - 1) * n / 2);
-
-    // each node should be attached to num_nodes - 1 edges
-    // keep array of nodes, and increment when touched by edge
-    // all edge lengths should be less than 1
-    int nodes[num_nodes] = { 0 };
-    for (int i = 0; i < g->num_edges; ++i) {
-	assert(g->list[i].weight <= 1);
-	assert(g->list[i].weight >= 0);
-	++nodes[g->list[i].u];
-	++nodes[g->list[i].v];
-    }
-    int edges_per_node = g->num_edges - 1;
-    for (int i = 0; i < num_nodes; ++i)
-	assert(nodes[i] == edges_per_node);
-}
-
-int test_graph_generate_euclidean() {
-    int num_nodes = 20;
-    graph *g = graph_generate_0(num_nodes);
-    assert(g->num_nodes == num_nodes);
-    assert(g->num_edges == (n - 1) * n / 2);
-
-    // each node should be attached to num_nodes - 1 edges
-    // keep array of nodes, and increment when touched by edge
-    // all edge lengths should be less than 1
-    int nodes[num_nodes] = { 0 };
-    for (int i = 0; i < g->num_edges; ++i) {
-	assert(g->list[i].weight <= 1);
-	assert(g->list[i].weight >= 0);
-	++nodes[g->list[i].u];
-	++nodes[g->list[i].v];
-    }
-    int edges_per_node = g->num_edges - 1;
-    for (int i = 0; i < num_nodes; ++i)
-	assert(nodes[i] == edges_per_node);
-}
 
 int test_graph_edge_merge() {
+    // single
+    edge l1[1] = { { 0, 0, .8} };
 
+    // duplicate
+    edge d2[2] = { { 0, 0, .5}, { 1, 1, .5} };
+    edge d3[3]; = { { 0, 0, .5}, { 1, 1, .5}, { 2, 2, .5} };
+    edge d4[4]; = { { 0, 0, .5}, { 1, 1, .5}, { 2, 2, .5}, { 3, 3, .5} };
+    edge d5[5]; = { { 0, 0, .5}, { 1, 1, .5}, { 2, 2, .5}, { 3, 3, .5}, { 4, 4, .5} };
+
+    // sorted
+    edge s2[2] = { { 0, 0, .1}, { 1, 1, .2} };
+    edge s3[3]; = { { 0, 0, .1}, { 1, 1, .2}, { 2, 2, .3} };
+    edge s4[4]; = { { 0, 0, .1}, { 1, 1, .2}, { 2, 2, .3}, { 3, 3, .4} };
+    edge s5[5]; = { { 0, 0, .1}, { 1, 1, .2}, { 2, 2, .3}, { 3, 3, .4}, { 4, 4, .5} };
+
+    // unsorted/interleaved
+    edge u2[2] = { { 1, 1, .2}, { 0, 0, .1} };
+    edge u3[3]; = { { 0, 0, .1}, { 2, 2, .3}, { 1, 1, .2} };
+    edge u4[4]; = { { 0, 0, .1}, { 3, 3, .4}, { 1, 1, .2}, { 2, 2, .3} };
+    edge u5[5]; = { { 0, 0, .1}, { 2, 2, .3}, { 4, 4, .5}, { 1, 1, .2}, { 3, 3, .4} };
+    
+    graph_edge_merge(&l1);
+    assert(l1 == { { 0, 0, .8} });
+ 
+    graph_edge_merge(&d2);
+    graph_edge_merge(&d3);
+    graph_edge_merge(&d4);
+    graph_edge_merge(&d5);
+    assert(d2[2] == { { 0, 0, .5}, { 1, 1, .5} });
+    assert(d3[3] == { { 0, 0, .5}, { 1, 1, .5}, { 2, 2, .5} });
+    assert(d4[4] == { { 0, 0, .5}, { 1, 1, .5}, { 2, 2, .5}, { 3, 3, .5} });
+    assert(d5[5] == { { 0, 0, .5}, { 1, 1, .5}, { 2, 2, .5}, { 3, 3, .5}, { 4, 4, .5} });
+
+    graph_edge_merge(&s2);
+    graph_edge_merge(&s3);
+    graph_edge_merge(&s4);
+    graph_edge_merge(&s5);
+    assert(s2[2] == { { 0, 0, .1}, { 1, 1, .2} });
+    assert(s3[3] == { { 0, 0, .1}, { 1, 1, .2}, { 2, 2, .3} });
+    assert(s4[4] == { { 0, 0, .1}, { 1, 1, .2}, { 2, 2, .3}, { 3, 3, .4} });
+    assert(s5[5] == { { 0, 0, .1}, { 1, 1, .2}, { 2, 2, .3}, { 3, 3, .4}, { 4, 4, .5} });
+
+    graph_edge_merge(&u2);
+    graph_edge_merge(&u3);
+    graph_edge_merge(&u4);
+    graph_edge_merge(&u5);
+    assert(u2[2] == { { 0, 0, .1}, { 1, 1, .2} });
+    assert(u3[3] == { { 0, 0, .1}, { 1, 1, .2}, { 2, 2, .3} });
+    assert(u4[4] == { { 0, 0, .1}, { 1, 1, .2}, { 2, 2, .3}, { 3, 3, .4} });
+    assert(u5[5] == { { 0, 0, .1}, { 1, 1, .2}, { 2, 2, .3}, { 3, 3, .4}, { 4, 4, .5} });
 }
 
 int test_graph_edge_sort() {
@@ -162,5 +213,21 @@ int test_graph_edge_sort() {
 }
 
 int graph_run_tests() {
-    // 
+    test_graph_generate_0();
+    test_graph_generate_euclidean();
+    test_graph_edge_merge();
+    test_graph_edge_sort();
+}
+
+test_graph *graph_test_graphs() {
+    test_graph *tgs = malloc(sizeof(test_graph) * 4);
+    tgs[0] = { .graph = { .list = [], .num_nodes = 1, .num_edges = 0 },
+	       .mst_weight = 0.0 };
+    tgs[1] = { .graph = { .list = [{ .u = 0, .v = 1, .weight = 0.5 }], .num_nodes = 2, .num_edges = 1 },
+	       .mst_weight = 0.5 };
+    tgs[2] = { .graph = { .list = [{ .u = 0, .v = 1, .weight = 0.1 }, { .u = 1, .v = 2, .weight = 0.7 }, { .u = 2, .v = 0, .weight = 0.5 }], .num_nodes = 3, .num_edges = 3 },
+	       .mst_weight = 0.6 };
+    tgs[3] = { .graph = { .list = [{ .u = 0, .v = 1, .weight = 1.0 }, { .u = 0, .v = 2, .weight = 0.6 }, { .u = 0, .v = 3, .weight = 0.4 }, { .u = 1, .v = 2, .weight = 0.3 }, { .u = 1, .v = 3, .weight = 0.1 }, { .u = 2, .v = 3, .weight = 0.2 }], .num_nodes = 4, .num_edges = 6 },
+	       .mst_weight = 0.7 };
+    return tgs;
 }
