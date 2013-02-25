@@ -93,7 +93,7 @@ void graph_edge_merge(edge *list, int min, int mid, int max) {
 
     int i, l, r;
     for (i = min, l = 0, r = 0; l < l_size && r < r_size; ++i)
-	list[i] = (left[l] <= right[r]) ? left[l++] : right[r++];
+	list[i] = (left[l].weight <= right[r].weight) ? left[l++] : right[r++];
     if (l < l_size) {
 	for (; i < max; ++i)
 	    list[i] = left[l++];
