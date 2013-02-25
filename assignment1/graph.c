@@ -81,7 +81,6 @@ void graph_free(graph *g) {
     free(g);
 }
 
-
 void graph_edge_merge(edge *list, int min, int mid, int max) {
     int l_size = min - min + 1;
     int r_size = max - mid;
@@ -112,5 +111,56 @@ void graph_edge_sort(graph *g) {
     }
 }
 
+int test_graph_generate_0() {
+    int num_nodes = 20;
+    graph *g = graph_generate_0(num_nodes);
+    assert(g->num_nodes == num_nodes);
+    assert(g->num_edges == (n - 1) * n / 2);
+
+    // each node should be attached to num_nodes - 1 edges
+    // keep array of nodes, and increment when touched by edge
+    // all edge lengths should be less than 1
+    int nodes[num_nodes] = { 0 };
+    for (int i = 0; i < g->num_edges; ++i) {
+	assert(g->list[i].weight <= 1);
+	assert(g->list[i].weight >= 0);
+	++nodes[g->list[i].u];
+	++nodes[g->list[i].v];
+    }
+    int edges_per_node = g->num_edges - 1;
+    for (int i = 0; i < num_nodes; ++i)
+	assert(nodes[i] == edges_per_node);
+}
+
+int test_graph_generate_euclidean() {
+    int num_nodes = 20;
+    graph *g = graph_generate_0(num_nodes);
+    assert(g->num_nodes == num_nodes);
+    assert(g->num_edges == (n - 1) * n / 2);
+
+    // each node should be attached to num_nodes - 1 edges
+    // keep array of nodes, and increment when touched by edge
+    // all edge lengths should be less than 1
+    int nodes[num_nodes] = { 0 };
+    for (int i = 0; i < g->num_edges; ++i) {
+	assert(g->list[i].weight <= 1);
+	assert(g->list[i].weight >= 0);
+	++nodes[g->list[i].u];
+	++nodes[g->list[i].v];
+    }
+    int edges_per_node = g->num_edges - 1;
+    for (int i = 0; i < num_nodes; ++i)
+	assert(nodes[i] == edges_per_node);
+}
+
+int test_graph_edge_merge() {
+
+}
+
+int test_graph_edge_sort() {
+
+}
+
 int graph_run_tests() {
+    // 
 }
