@@ -34,8 +34,8 @@ float kruskals(graph *input_graph) {
 int main(int argc, char **argv) {
     // process command line arguments
     if (argc != 5) {
-	fprintf(stderr, "usage: %s flag numpoints numtrials dimension\n", argv[0]);
-	exit(1);
+	    fprintf(stderr, "usage: %s flag numpoints numtrials dimension\n", argv[0]);
+	    exit(1);
     }
     int flag = atoi(argv[1]);
     int numpoints = atoi(argv[2]);
@@ -43,14 +43,19 @@ int main(int argc, char **argv) {
     int dimension = atoi(argv[4]);
 
     if (flag == 1)
-	run_tests();
+	    run_tests();
+
+    if numpoints <= 0 {
+        fprintf(stderr, "No tree exists for a graph with %d vertices", numpoints);
+        exit(EXIT_FAILURE);
+    }
     
     // run trials
     float running_total = 0;
     for (int i = 0; i < numtrials; ++i) {
-	graph *g = generate_graph(dimension, numpoints);
-	running_total += kruskals(g);
-	free_graph(g);
+	    graph *g = generate_graph(dimension, numpoints);
+	    running_total += kruskals(g);
+	    free_graph(g);
     }
 
     printf("%f %d %d %d\n", running_total / numpoints, numpoints, numtrials, dimension);
