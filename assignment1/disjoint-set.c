@@ -2,6 +2,8 @@
 #ifndef INC_ASSERT_H
 #define INC_ASSERT_H
 #include <assert.h>
+#include <stdlib.h>
+#include <string.h>
 #endif /* INC_HEADER_H */
 
 ds_forest *ds_makeforest(int size) {
@@ -22,24 +24,23 @@ void ds_burnforest(ds_forest *f) {
 
 void ds_makeset(ds_forest *f, int x) {
     f->p[x] = x;
-    rank[x] = 0;
+    f->rank[x] = 0;
 }
 
 int ds_find(ds_forest *f, int x) {
-    if (x != f->p[x]) {
-	f->p[x] = ds_find(f->p[x]);
-    }
+    if (x != f->p[x])
+	    f->p[x] = ds_find(f, f->p[x]);
     return f->p[x];
 }
 
 int ds_link(ds_forest *f, int x, int y) {
     if (f->rank[x] > f->rank[y]) {
-	int temp = x;
-	x = y;
-	y = temp;
+	    int temp = x;
+	    x = y;
+	    y = temp;
     }
-    else if (f->rank[x] = f->rank[y])
-	++f->rank[y];
+    else if (f->rank[x] == f->rank[y])
+	    ++f->rank[y];
     f->p[x] = y;
     return y;
 }
@@ -50,7 +51,7 @@ int ds_union(ds_forest *f, int x, int y) {
 
 int ds_run_tests() {
     int nodes = 12;
-    ds_forest *f = ds_make_forest(nodes);
+    ds_forest *f = ds_makeforest(nodes);
 
     // makeset
     for (int i = 0; i < nodes; ++i) {
@@ -96,4 +97,6 @@ int ds_run_tests() {
     assert(f->p[10] == 8);
     assert(f->p[11] == 10);
     assert(f->rank[8] == 2);
+
+    return 0;
 }
