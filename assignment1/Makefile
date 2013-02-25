@@ -33,4 +33,4 @@ main.o:  main.c
 # This removes the executable file, as well as old .o object
 # files and *~ backup files:
 clean: 
-	$(RM) count *.o *~
+	$(RM) randmst *.o *~

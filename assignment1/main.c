@@ -44,12 +44,12 @@ int main(int argc, char **argv) {
 
     if (flag == 1) {
         test_graph *test_array = graph_test_graphs();
-        int length = sizeof(test_array)/sizeof(test_array[0]);
+	int length = 4;
         for (int n = 0; n < length; n++) { 
             if (test_array[n].mst_weight == kruskals(&test_array[n].graph))
-                printf("TEST %d: PASS", n);
+                printf("TEST %d: PASS\n", n);
             else {
-                printf("TEST %d: FAIL", n);
+                printf("TEST %d: FAIL\n", n);
                 exit(EXIT_FAILURE);
             }
         }
@@ -58,7 +58,9 @@ int main(int argc, char **argv) {
     }
 
     if (flag == 2) {
-       return graph_run_tests();
+	ds_run_tests();
+	graph_run_tests();
+	return 0;
     }
 
     if (numpoints <= 0) {

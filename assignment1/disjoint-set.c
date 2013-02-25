@@ -57,7 +57,7 @@ int ds_run_tests() {
     for (int i = 0; i < nodes; ++i) {
 	ds_makeset(f, i);
 	assert(f->rank[i] == 0);
-	assert(f->p[i] == 0);
+	assert(f->p[i] == i);
 
 	// find (rank 0)
 	assert(i == ds_find(f, i));
@@ -65,38 +65,38 @@ int ds_run_tests() {
     // link (roots)
     for (int i = 0; i < nodes; i += 2) {
 	ds_link(f, i, i + 1);
-	assert(f->p[i] == 1);
-	assert(f->p[i + 1] == 1);
-	assert(f->rank[i] == 1);
-	assert(f->rank[i + 1] == 0);
+	assert(f->p[i] == i + 1);
+	assert(f->p[i + 1] == i + 1);
+	assert(f->rank[i] == 0);
+	assert(f->rank[i + 1] == 1);
 
 	// find (rank 1 and 0) - no side effects
-	assert(i == ds_find(f, i));
-	assert(i == ds_find(f, i + 1));
+	assert(ds_find(f, i) == i + 1);
+	assert(ds_find(f, i + 1) == i + 1);
     }
     // union (root & root)
-    ds_union(f, 0, 2);
-    assert(f->p[0] == 0);
-    assert(f->p[1] == 0);
-    assert(f->p[2] == 0);
-    assert(f->p[3] == 2);
-    assert(f->rank[0] == 2);
+    ds_union(f, 1, 3);
+    assert(f->p[0] == 1);
+    assert(f->p[1] == 3);
+    assert(f->p[2] == 3);
+    assert(f->p[3] == 3);
+    assert(f->rank[3] == 2);
 
     // union (child & child)
-    ds_union(f, 5, 7);
-    assert(f->p[4] == 4);
-    assert(f->p[5] == 4);
-    assert(f->p[6] == 4);
-    assert(f->p[7] == 6);
-    assert(f->rank[4] == 2);
+    ds_union(f, 4, 6);
+    assert(f->p[4] == 5);
+    assert(f->p[5] == 7);
+    assert(f->p[6] == 7);
+    assert(f->p[7] == 7);
+    assert(f->rank[7] == 2);
 
     // union (root & child)
-    ds_union(f, 8, 11);
-    assert(f->p[8] == 8);
-    assert(f->p[9] == 8);
-    assert(f->p[10] == 8);
-    assert(f->p[11] == 10);
-    assert(f->rank[8] == 2);
+    ds_union(f, 9, 10);
+    assert(f->p[8] == 9);
+    assert(f->p[9] == 11);
+    assert(f->p[10] == 11);
+    assert(f->p[11] == 11);
+    assert(f->rank[11] == 2);
 
     return 0;
 }
