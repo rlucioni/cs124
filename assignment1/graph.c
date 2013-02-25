@@ -11,41 +11,25 @@
 #define RAND_FLOAT() (rand() / RAND_MAX)
 #define SQUARE(x) ((x) * (x))
 #define SWAP(x,y) { a ^= b; b ^= a; a ^= b; }
+#define MIN(x,y) (((x) <= (y)) ? (x) : (y))
 
-static void graph_empty(int);
 static void graph_generate_0(int);
 static void graph_generate_euclidean(int, int);
-
-// only utilize bottom left of adjacency matrix 
-
-graph *graph_empty(int numpoints) {
-    graph *g = (graph *) malloc(sizeof(graph));
-    g->adj_matrix = (float **) malloc(sizeof(float *) * numpoints);
-    for (int i = 0; i < numpoints; ++i) {
-	g->adj_matrix[i] = (float *) malloc(sizeof(float) * numpoints);
-	memset(g->adj_matrix[i], -1, sizeof(float) * numpoints);
-    }
-    g->num_nodes = numpoints;
-
-    return g;
-}
-
-void graph_free(graph *g) {
-    for (i = 0; i < g->numpoints; ++g)
-	free(g->adj_matrix[i]);
-    free(g->adj_matrix);
-    free(g);
-}
-
-int graph_size(graph *g) {
-    return g->num_nodes;
-}
+static void graph_edge_merge(edge *, int, int, int);
 
 graph *graph_generate_0(int numpoints) {
+    graph *g = (graph *) malloc(sizeof(graph));
+    g->num_nodes = numpoints;
+    g->num_edges = (numpoints - 1) * numpoints / 2;
+    g->list = malloc(sizeof(edge) * g->num_edges);
+    
     graph *g = graph_empty(numpoints);
     for (int i = 0; i < numpoints; ++i) {
 	for (int j = 0; j <=i; ++j) {
-	    g->adj_matrix[i][j] = RAND_FLOAT();
+	    if (i != j) {
+		edge e = { .u = i, .v = j, .weight = RAND_FLOAT() };
+		g->list[i] = e;
+	    }
 	}
     }
     
@@ -53,7 +37,11 @@ graph *graph_generate_0(int numpoints) {
 }
 
 graph *graph_generate_euclidean(int dimensions, int numpoints) {
-    graph *g = graph_empty(numpoints);
+    graph *g = (graph *) malloc(sizeof(graph));
+    g->num_nodes = numpoints;
+    g->num_edges = (numpoints - 1) * numpoints / 2;
+    g->list = malloc(sizeof(edge) * g->num_edges);
+
     float ps[numpoints][dimensions]; // array of points, each of dimensions dimensions
     for (int i = 0; i < numpoints; ++i) {
 	for (int d = 0; d < dimensions; ++d) {
@@ -66,7 +54,8 @@ graph *graph_generate_euclidean(int dimensions, int numpoints) {
 	    for (int d = 0; d < dimensions; ++d) {
 		distance += SQUARE(ps[i][d] - ps[j][d]);
 	    }
-	    g->adj_matrix[i][j] = sqrt(distance);
+	    edge e = { .u = i, .v = j, .weight = sqrt(distance) };
+	    g->list[i] = e;
 	}
     }
 
@@ -87,28 +76,41 @@ graph *graph_generate(int dimensions, int numpoints) {
     }
 }
 
-float graph_get_edge(graph *g, int n1, int n2) {
-    if (n2 > n1) SWAP(n1, n2);
-    return g->adj_matrix[n1][n2];
+void graph_free(graph *g) {
+    free(g->list);
+    free(g);
+}
+
+
+void graph_edge_merge(edge *list, int min, int mid, int max) {
+    int l_size = min - min + 1;
+    int r_size = max - mid;
+
+    edge left[l_size];
+    edge right[r_size];
+    memcpy(&left, list + min, sizeof(edge) * l_size);
+    memcpy(&right, list + mid + 1, sizeof(edge) * r_size);
+
+    int i, l, r;
+    for (i = min, l = 0, r = 0; l < l_size && r < r_size; ++i)
+	list[i] = (left[l] <= right[r]) ? left[l++] : right[r++];
+    if (l < l_size) {
+	for (; i < max; ++i)
+	    list[i] = left[l++];
+    }
+    else {
+	for (; i < max; ++i)
+	    list[i] = right[r++];
+    }
+}
+
+void graph_edge_sort(graph *g) {
+    for (int m = 1; m < g->num_edges; m *= 2) {
+	for (int i = 0; i < g->num_edges - m; i += 2 * m) {
+	    merge(g->list, i, i + m - 1, MIN(i + 2 *m, n));
+	}
+    }
 }
 
 int graph_run_tests() {
-    int numpoints = 20;
-    for (int d = 0; d <= 4; ++d) {
-	if (d == 1) continue;
-	g = graph_generate(d, numpoints);
-	// check size
-	assert(numpoints == graph_size(g));
-
-	// check edge lengths
-	float max_edge = (d == 0) ? 1 : sqrt(d);
-	for (int i = 0; i < numpoints; ++i) {
-	    for (int j = 0; j < numpoints; ++j) {
-		float edge_length = graph_get_edge(g, i, j);
-		assert(0 <= edge_length && edge_length <= max_edge);
-	    }
-	}
-    }
-
-    return 1;
 }

@@ -21,6 +21,7 @@ typedef struct {
 //    specification
 graph *graph_generate(int dimensions, int numpoints);
 void graph_free(graph *g);
+void graph_edge_sort(graph *g);
 
 int graph_run_tests();
 test_graph *graph_test_graphs();
