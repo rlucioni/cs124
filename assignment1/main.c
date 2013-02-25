@@ -1,7 +1,6 @@
 #include "graph.h"
 #include "disjoint-set.h"
 #include <stdio.h>
-#include <assert.h>
 
 // Kruskal's returns an adjacency matrix of the MST, indexed by node
 float kruskals(graph *input_graph) {
