@@ -44,7 +44,9 @@ int main(int argc, char **argv) {
 
     if (flag == 1) {
         test_graph *test_array = graph_test_graphs();
-	int length = 4;
+	// some test comparisons may fail because of the inherent inaccuracy in
+    // floating point arithmetic
+    int length = 4;
         for (int n = 0; n < length; n++) { 
             if (test_array[n].mst_weight == kruskals(&test_array[n].graph))
                 printf("TEST %d: PASS\n", n);
