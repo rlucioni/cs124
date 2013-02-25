@@ -42,8 +42,24 @@ int main(int argc, char **argv) {
     int numtrials = atoi(argv[3]);
     int dimension = atoi(argv[4]);
 
-    if (flag == 1)
-	    run_tests();
+    if (flag == 1) {
+        test_graph *test_array = graph_test_graphs();
+        int length = sizeof(test_array)/sizeof(test_array[0]);
+        for (int n = 0; n < length; n++) { 
+            if test_array[n]->mst_weight == kruskals(test_array[n]->graph)
+                printf("TEST %d: PASS", n);
+            else {
+                printf("TEST %d: FAIL", n);
+                exit(EXIT_FAILURE);
+            }
+        }
+
+        return 0;
+    }
+
+    if (flag == 2) {
+       return graph_run_tests();
+    }
 
     if numpoints <= 0 {
         fprintf(stderr, "No tree exists for a graph with %d vertices", numpoints);
