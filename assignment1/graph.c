@@ -48,14 +48,15 @@ graph *graph_generate_euclidean(int dimensions, int numpoints) {
 	    ps[i][d] = (float) rand() / RAND_MAX;
 	}
     }
-    for (int i = 0; i < numpoints; ++i) {
-	for (int j = 0; j <= i; ++j) {
+    for (int i = 0, e = 0; i < numpoints; ++i) {
+	for (int j = 0; j < i; ++j) {
 	    float distance = 0;
 	    for (int d = 0; d < dimensions; ++d) {
 		distance += SQUARE(ps[i][d] - ps[j][d]);
 	    }
-	    edge e = { .u = i, .v = j, .weight = sqrt(distance) };
-	    g->list[i] = e;
+	    edge edg = { .u = i, .v = j, .weight = sqrt(distance) };
+	    g->list[e] = edg;
+	    ++e;
 	}
     }
 
