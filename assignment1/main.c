@@ -28,6 +28,8 @@ float kruskals(graph *input_graph) {
         }
     }
 
+    ds_burnforest(f);
+
     return mst_weight;
 }
 
