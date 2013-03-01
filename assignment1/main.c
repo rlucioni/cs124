@@ -10,13 +10,16 @@ float kruskals(graph *input_graph) {
 
     // sort edges of input_graph by weight <- side effect
     graph_edge_sort(input_graph);
+    //printf("EDGES SORTED\n");
 
     // make space for the vertex sets
     ds_forest *f = ds_makeforest(input_graph->num_nodes);
+    //printf("FOREST GROWN\n");
     
     // for each vertex in input_graph, makeset containing vertex
     for (int n = 0; n < input_graph->num_nodes; n++)
         ds_makeset(f, n);
+    //printf("VERTEX SETS CREATED\n");
 
     // cycle through edges in input_graph
     for (int e = 0; e < input_graph->num_edges; e++) {
@@ -73,10 +76,12 @@ int main(int argc, char **argv) {
     }
     
     // run trials
-    float running_total = 0;
+    float running_total = 0.0;
     for (int i = 0; i < numtrials; ++i) {
 	graph *g = graph_generate(dimension, numpoints);
+    //printf("GRAPH GENERATED\n");
 	running_total += kruskals(g);
+    //printf("KRUSKALS COMPLETE\n\n");
 	graph_free(g);
     }
 

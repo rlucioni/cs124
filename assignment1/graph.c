@@ -82,6 +82,7 @@ void graph_free(graph *g) {
     free(g);
 }
 
+
 void graph_edge_merge(edge *list, int s1, int s2, int end) {
     int l_size = s2 - s1;
     int r_size = end - s2;
@@ -105,6 +106,7 @@ void graph_edge_merge(edge *list, int s1, int s2, int end) {
 }
 
 void graph_edge_sort(graph *g) {
+    // printf("EDGE SORT BEGIN\n");
     for (int m = 1; m < g->num_edges; m *= 2) {
 	for (int i = 0; i < g->num_edges - m; i += 2 * m) {
 	    graph_edge_merge(g->list, i, i + m, MIN(i + 2 *m, g->num_edges));
