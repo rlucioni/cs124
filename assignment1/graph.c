@@ -107,8 +107,12 @@ void graph_edge_sort(graph *g) {
 	a = b;
 	b = temp;
     }
-    if (a != g->list)
+    if (a != g->list) {
 	memcpy(g->list, a, sizeof(edge) * n);
+	free(a);
+    }
+    else
+	free(b);
 }
 
 void graph_print(graph *g) {

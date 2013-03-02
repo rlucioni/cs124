@@ -9,10 +9,8 @@ float kruskals(graph *input_graph) {
     float mst_weight = 0.0;
 
     // sort edges of input_graph by weight <- side effect
-    graph_print(input_graph);
     graph_edge_sort(input_graph);
-    graph_print(input_graph);
-    //printf("EDGES SORTED\n");
+    printf("EDGES SORTED\n");
 
     // make space for the vertex sets
     ds_forest *f = ds_makeforest(input_graph->num_nodes);
@@ -81,7 +79,7 @@ int main(int argc, char **argv) {
     float running_total = 0.0;
     for (int i = 0; i < numtrials; ++i) {
 	graph *g = graph_generate(dimension, numpoints);
-    //printf("GRAPH GENERATED\n");
+	printf("GRAPH GENERATED\n");
 	running_total += kruskals(g);
     //printf("KRUSKALS COMPLETE\n\n");
 	graph_free(g);
