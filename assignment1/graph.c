@@ -114,9 +114,14 @@ void graph_edge_sort(graph *g) {
 void graph_print(graph *g) {
     printf("# of Nodes: %d\n", g->num_nodes);
     printf("# of Edges: %d\n", g->num_edges);
-    for (int i = 0; i < g->num_edges; ++i)
+    printf("Edge Weights: [");
+    for (int i = 0; i < g->num_edges; ++i) {
+	printf("%s%.02f", (i == 0) ? "" : ", ", g->list[i].weight);
+    }
+    printf("]\n");
+    /*    for (int i = 0; i < g->num_edges; ++i)
 	printf("\t(%d, %d) : %f\n", g->list[i].u, g->list[i].v, g->list[i].weight);
-    printf("\n");
+	printf("\n");*/
 }
 
 int test_graph_generate_0() {
