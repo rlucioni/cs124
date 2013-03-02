@@ -3,13 +3,22 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+void print_edge_weights(graph *g) {
+    printf("edge weights: [");
+    for (int i = 0; i < g->num_nodes; i++)
+	printf("%s%.2f", (i == 0) ? "" : ", ", g->list[i].weight);
+    printf("]\n");
+}
+
 // Kruskal's returns an adjacency matrix of the MST, indexed by node
 float kruskals(graph *input_graph) {
     // our X is a summation of the weights - we asked about this on Piazza
     float mst_weight = 0.0;
 
     // sort edges of input_graph by weight <- side effect
+    print_edge_weights(input_graph);
     graph_edge_sort(input_graph);
+    print_edge_weights(input_graph);
     //printf("EDGES SORTED\n");
 
     // make space for the vertex sets
@@ -50,8 +59,8 @@ int main(int argc, char **argv) {
     if (flag == 1) {
         test_graph *test_array = graph_test_graphs();
 	// some test comparisons may fail because of the inherent inaccuracy in
-    // floating point arithmetic
-    int length = 4;
+	// floating point arithmetic
+	int length = 4;
         for (int n = 0; n < length; n++) { 
             if (test_array[n].mst_weight == kruskals(&test_array[n].graph))
                 printf("TEST %d: PASS\n", n);

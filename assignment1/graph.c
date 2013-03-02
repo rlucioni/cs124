@@ -4,10 +4,7 @@
 #include <math.h>
 #include <string.h>
 #include <stdio.h>
-#ifndef INC_ASSERT_H
-#define INC_ASSERT_H
 #include <assert.h>
-#endif
 
 #define SQUARE(x) ((x) * (x))
 #define SWAP(x,y) { a ^= b; b ^= a; a ^= b; }
@@ -15,7 +12,7 @@
 
 static graph *graph_generate_0(int);
 static graph *graph_generate_euclidean(int, int);
-static void graph_edge_merge(edge *, int, int, int);
+static void graph_edge_merge(edge *, int, int, int, edge *);
 
 graph *graph_generate_0(int numpoints) {
     graph *g = (graph *) malloc(sizeof(graph));
@@ -80,35 +77,38 @@ void graph_free(graph *g) {
 }
 
 
-void graph_edge_merge(edge *list, int s1, int s2, int end) {
-    int l_size = s2 - s1;
-    int r_size = end - s2;
-
-    edge left[l_size];
-    edge right[r_size];
-    memcpy(&left, list + s1, sizeof(edge) * l_size);
-    memcpy(&right, list + s2, sizeof(edge) * r_size);
-
+void graph_edge_merge(edge *src, int s1, int s2, int end, edge *dest) {
     int i, l, r;
-    for (i = s1, l = 0, r = 0; l < l_size && r < r_size; ++i) 
-	list[i] = (left[l].weight <= right[r].weight) ? left[l++] : right[r++];
-    if (l < l_size) {
+    for (i = s1, l = s1, r = s2; l < s2 && r < end; ++i) 
+	//dest[i] = (src[l].weight <= src[r].weight) ? src[l++] : src[r++];
+	memcpy(&dest[i], (src[l].weight <= src[r].weight) ? &src[l++] : &src[r++], sizeof(edge));
+    if (l < s2) {
 	for (; i < end; ++i, ++l)
-	    list[i] = left[l];
+	    //dest[i] = src[l];	
+	    memcpy(&dest[i], &src[l], sizeof(edge));
     }
     else {
 	for (; i < end; ++i, ++r) 
-	    list[i] = right[r];
+	    //dest[i] = src[r];	
+	    memcpy(&dest[i], &src[r], sizeof(edge));
     }
 }
 
 void graph_edge_sort(graph *g) {
     // printf("EDGE SORT BEGIN\n");
-    for (int m = 1; m < g->num_edges; m *= 2) {
-	for (int i = 0; i < g->num_edges - m; i += 2 * m) {
-	    graph_edge_merge(g->list, i, i + m, MIN(i + 2 *m, g->num_edges));
+    int n = g->num_edges;
+    edge *a = g->list;
+    edge *b = malloc(sizeof(edge) * n);
+    for (int m = 1; m < n; m *= 2) {
+	for (int i = 0; i < n; i += 2 * m) {
+	    graph_edge_merge(a, i, MIN(i + m, n), MIN(i + 2 * m, n), b);
 	}
+	edge *temp = a;
+	a = b;
+	b = temp;
     }
+    if (a != g->list)
+	memcpy(g->list, a, sizeof(edge) * n);
 }
 
 void graph_print(graph *g) {
@@ -169,7 +169,8 @@ int test_graph_generate_euclidean() {
 }
 
 int test_graph_edge_merge() {
-    /*    // duplicate
+    /*
+    // duplicate
     edge d2[2] = { { 0, 0, .5}, { 1, 1, .5} };
     edge d3[3] = { { 0, 0, .5}, { 1, 1, .5}, { 2, 2, .5} };
     edge d4[4] = { { 0, 0, .5}, { 1, 1, .5}, { 2, 2, .5}, { 3, 3, .5} };
@@ -187,28 +188,28 @@ int test_graph_edge_merge() {
     edge u4[4] = { { 0, 0, .1}, { 3, 3, .4}, { 1, 1, .2}, { 2, 2, .3} };
     edge u5[5] = { { 0, 0, .1}, { 2, 2, .3}, { 4, 4, .5}, { 1, 1, .2}, { 3, 3, .4} };
 
-    graph_edge_merge(&d2, 0, 1, 2);
-    graph_edge_merge(&d3, 0, 2, 3);
-    graph_edge_merge(&d4, 0, 2, 4);
-    graph_edge_merge(&d5, 0, 3, 5);
-    assert(d2[2] == { { 0, 0, .5}, { 1, 1, .5} });
-    assert(d3[3] == { { 0, 0, .5}, { 1, 1, .5}, { 2, 2, .5} });
-    assert(d4[4] == { { 0, 0, .5}, { 1, 1, .5}, { 2, 2, .5}, { 3, 3, .5} });
-    assert(d5[5] == { { 0, 0, .5}, { 1, 1, .5}, { 2, 2, .5}, { 3, 3, .5}, { 4, 4, .5} });
+    graph_edge_merge(d2, 0, 1, 2);
+    graph_edge_merge(d3, 0, 2, 3);
+    graph_edge_merge(d4, 0, 2, 4);
+    graph_edge_merge(d5, 0, 3, 5);
+    assert((d2 == { { 0, 0, .5}, { 1, 1, .5} }));
+    assert((d3 == { { 0, 0, .5}, { 1, 1, .5}, { 2, 2, .5} }));
+    assert((d4 == { { 0, 0, .5}, { 1, 1, .5}, { 2, 2, .5}, { 3, 3, .5} }));
+    assert((d5 == { { 0, 0, .5}, { 1, 1, .5}, { 2, 2, .5}, { 3, 3, .5}, { 4, 4, .5} }));
 
-    graph_edge_merge(&s2, 0, 1, 2);
-    graph_edge_merge(&s3, 0, 2, 3);
-    graph_edge_merge(&s4, 0, 2, 4);
-    graph_edge_merge(&s5, 0, 3, 5);
+    graph_edge_merge(s2, 0, 1, 2);
+    graph_edge_merge(s3, 0, 2, 3);
+    graph_edge_merge(s4, 0, 2, 4);
+    graph_edge_merge(s5, 0, 3, 5);
     assert(s2[2] == { { 0, 0, .1}, { 1, 1, .2} });
     assert(s3[3] == { { 0, 0, .1}, { 1, 1, .2}, { 2, 2, .3} });
     assert(s4[4] == { { 0, 0, .1}, { 1, 1, .2}, { 2, 2, .3}, { 3, 3, .4} });
     assert(s5[5] == { { 0, 0, .1}, { 1, 1, .2}, { 2, 2, .3}, { 3, 3, .4}, { 4, 4, .5} });
 
-    graph_edge_merge(&u2, 0, 1, 2);
-    graph_edge_merge(&u3, 0, 2, 3);
-    graph_edge_merge(&u4, 0, 2, 4);
-    graph_edge_merge(&u5, 0, 3, 5);
+    graph_edge_merge(u2, 0, 1, 2);
+    graph_edge_merge(u3, 0, 2, 3);
+    graph_edge_merge(u4, 0, 2, 4);
+    graph_edge_merge(u5, 0, 3, 5);
     assert(u2[2] == { { 0, 0, .1}, { 1, 1, .2} });
     assert(u3[3] == { { 0, 0, .1}, { 1, 1, .2}, { 2, 2, .3} });
     assert(u4[4] == { { 0, 0, .1}, { 1, 1, .2}, { 2, 2, .3}, { 3, 3, .4} });
