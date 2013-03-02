@@ -26,10 +26,8 @@ graph *graph_generate_0(int numpoints) {
     int e = 0;
     for (int i = 1; i < numpoints; ++i) {
 	for (int j = 0; j < i; ++j) {
-	    g->list[e].u = i;
-	    g->list[e].v = j;
-	    g->list[e].weight = (float) rand() / RAND_MAX;
-	    ++e;
+	    edge e_local = { .u = i, .v = j, .weight = (float) rand() / RAND_MAX };
+	    g->list[e++] = e_local;
 	}
     }
 
@@ -54,9 +52,8 @@ graph *graph_generate_euclidean(int dimensions, int numpoints) {
 	    for (int d = 0; d < dimensions; ++d) {
 		distance += SQUARE(ps[i][d] - ps[j][d]);
 	    }
-	    edge edg = { .u = i, .v = j, .weight = sqrt(distance) };
-	    g->list[e] = edg;
-	    ++e;
+	    edge e_local = { .u = i, .v = j, .weight = sqrt(distance) };
+	    g->list[e++] = e_local;
 	}
     }
 
