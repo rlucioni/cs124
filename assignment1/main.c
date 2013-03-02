@@ -9,9 +9,9 @@ float kruskals(graph *input_graph) {
     float mst_weight = 0.0;
 
     // sort edges of input_graph by weight <- side effect
-    graph_print(input_graph);
+    //graph_print(input_graph);
     graph_edge_sort(input_graph);
-    graph_print(input_graph);
+    //graph_print(input_graph);
     //printf("EDGES SORTED\n");
 
     // make space for the vertex sets
