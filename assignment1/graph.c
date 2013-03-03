@@ -58,9 +58,6 @@ graph *graph_generate_euclidean(int dimensions, int numpoints) {
 }
 
 graph *graph_generate(int dimensions, int numpoints) {
-    // seed random number generator
-    srand(time(NULL));
-    
     // call appropriate graph generation function
     switch (dimensions) {
     case 0: return graph_generate_0(numpoints);

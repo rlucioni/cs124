@@ -2,6 +2,9 @@
 #include "disjoint-set.h"
 #include <stdio.h>
 #include <stdlib.h>
+#include <time.h>
+
+float max_weight = 0.0;
 
 // Kruskal's returns an adjacency matrix of the MST, indexed by node
 float kruskals(graph *input_graph) {
@@ -27,6 +30,7 @@ float kruskals(graph *input_graph) {
         int node_v = input_graph->list[e].v;
         if (ds_find(f, node_u) != ds_find(f, node_v)) {
             mst_weight += input_graph->list[e].weight;
+	    max_weight = input_graph->list[e].weight;
             ds_union(f, node_u, node_v);
         }
     }
@@ -77,6 +81,7 @@ int main(int argc, char **argv) {
     
     // run trials
     float running_total = 0.0;
+    srand(time(NULL));
     for (int i = 0; i < numtrials; ++i) {
 	graph *g = graph_generate(dimension, numpoints);
 	//printf("GRAPH GENERATED\n");
@@ -86,5 +91,7 @@ int main(int argc, char **argv) {
     }
 
     printf("%f %d %d %d\n", running_total / numtrials, numpoints, numtrials, dimension);
+    if (flag == 3)
+	printf("Maximum Edge Weight: %f\n", max_weight);
     return 0;
 }
