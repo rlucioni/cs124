@@ -23,10 +23,14 @@ graph *graph_generate_0(int numpoints) {
     int e = 0;
     for (int i = 1; i < numpoints; ++i) {
 	for (int j = 0; j < i; ++j) {
-	    edge e_local = { .u = i, .v = j, .weight = (float) rand() / RAND_MAX };
-	    g->list[e++] = e_local;
+	    float w = (float) rand() / RAND_MAX;
+	    if (numpoints < 10000 || w < 0.002) {
+		edge e_local = { .u = i, .v = j, .weight = w };
+		g->list[e++] = e_local;
+	    }
 	}
     }
+    g->num_edges = e;
 
     return g;
 }
@@ -43,16 +47,22 @@ graph *graph_generate_euclidean(int dimensions, int numpoints) {
 	    ps[i][d] = (float) rand() / RAND_MAX;
 	}
     }
-    for (int i = 0, e = 0; i < numpoints; ++i) {
+    int e = 0;
+    for (int i = 0; i < numpoints; ++i) {
 	for (int j = 0; j < i; ++j) {
 	    float distance = 0;
 	    for (int d = 0; d < dimensions; ++d) {
 		distance += SQUARE(ps[i][d] - ps[j][d]);
 	    }
-	    edge e_local = { .u = i, .v = j, .weight = sqrt(distance) };
-	    g->list[e++] = e_local;
+	    float w = sqrt(distance);
+	    if (numpoints < 1000 || (dimensions == 2 && w < 0.05) ||
+		(dimensions == 3 && w < 0.15) || (dimensions == 4 && w < 0.3)) {
+		edge e_local = { .u = i, .v = j, .weight = w };
+		g->list[e++] = e_local;
+	    }
 	}
     }
+    g->num_edges = e;
 
     return g;
 }
