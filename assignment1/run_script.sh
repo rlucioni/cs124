@@ -87,10 +87,10 @@ echo "RUNNING KRUSKALS, 3 DIMENSIONS..."
 #wait
 #./randmst 0 32768 5 3 >> kruskals3.txt
 #wait
-./randmst 0 65536 5 3 >> kruskals3.txt
-wait
-./randmst 0 131072 5 3 >> kruskals3.txt
-wait
+#./randmst 0 65536 5 3 >> kruskals3.txt
+#wait
+#./randmst 0 131072 5 3 >> kruskals3.txt
+#wait
 
 echo "RUNNING KRUSKALS, 4 DIMENSIONS..."
 #./randmst 0 16 5 4 >> kruskals4.txt
@@ -117,7 +117,7 @@ echo "RUNNING KRUSKALS, 4 DIMENSIONS..."
 #wait
 #./ra#ndmst 0 32768 5 4 >> kruskals4.txt
 #wait
-./randmst 0 65536 5 4 >> kruskals4.txt
-wait
-./randmst 0 131072 5 4 >> kruskals4.txt
-wait
+#./randmst 0 65536 5 4 >> kruskals4.txt
+#wait
+#./randmst 0 131072 5 4 >> kruskals4.txt
+#wait
