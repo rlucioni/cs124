@@ -90,8 +90,11 @@ int main(int argc, char **argv) {
 	graph_free(g);
     }
 
-    printf("%f %d %d %d\n", running_total / numtrials, numpoints, numtrials, dimension);
-    if (flag == 3)
+    if (flag == 3) {
 	printf("Maximum Edge Weight: %f\n", max_weight);
+	return 0;
+    }
+
+    printf("%f %d %d %d\n", running_total / numtrials, numpoints, numtrials, dimension);
     return 0;
 }
