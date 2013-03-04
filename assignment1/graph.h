@@ -3,7 +3,7 @@
 //    functions for working with those data structures
 
 // edge:
-//    u,v = vertices
+//    u,v = vertices (vertices represented as ints)
 //    weight = edge weight
 typedef struct {
     int u;
