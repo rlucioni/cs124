@@ -151,23 +151,10 @@ int test_graph_generate_0() {
     int num_nodes = 20;
     graph *g = graph_generate_0(num_nodes);
     assert(g->num_nodes == num_nodes);
-    assert(g->num_edges == (num_nodes - 1) * num_nodes / 2);
-
-    // each node should be attached to num_nodes - 1 edges
-    // keep array of nodes, and increment when touched by edge
-    // all edge lengths should be less than 1
-    int nodes[num_nodes];
-    memset(&nodes, 0, sizeof(int) * num_nodes);
-
     for (int i = 0; i < g->num_edges; ++i) {
 	assert(g->list[i].weight <= 1);
 	assert(g->list[i].weight >= 0);
-	++nodes[g->list[i].u];
-	++nodes[g->list[i].v];
     }
-    int edges_per_node = g->num_edges - 1;
-    for (int i = 0; i < num_nodes; ++i)
-	assert(nodes[i] == edges_per_node);
 
     return 0;
 }
@@ -177,20 +164,12 @@ int test_graph_generate_euclidean() {
     for (int d = 2; d <= 4; ++d) {
 	graph *g = graph_generate_euclidean(d, num_nodes);
 	assert(g->num_nodes == num_nodes);
-	assert(g->num_edges == (num_nodes - 1) * num_nodes / 2);
 
-	int nodes[num_nodes];
-	memset(&nodes, 0, sizeof(int) * num_nodes);
 	float max_weight = sqrt(d);
 	for (int i = 0; i < g->num_edges; ++i) {
 	    assert(g->list[i].weight <= max_weight);
 	    assert(g->list[i].weight >= 0);
-	    ++nodes[g->list[i].u];
-	    ++nodes[g->list[i].v];
 	}
-	int edges_per_node = g->num_edges - 1;
-	for (int i = 0; i < num_nodes; ++i)
-	    assert(nodes[i] == edges_per_node);
     }
 
     return 0;
@@ -200,7 +179,6 @@ int test_graph_generate_euclidean() {
 int graph_run_tests() {
     test_graph_generate_0();
     test_graph_generate_euclidean();
-
     return 0;
 }
 
