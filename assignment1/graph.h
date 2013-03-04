@@ -1,3 +1,7 @@
+// graph.h
+//    graph.h/graph.c implement graph data structures and helper
+//    functions for working with those data structures
+
 // edge:
 //    u,v = vertices
 //    weight = edge weight

@@ -66,11 +66,11 @@ int main(int argc, char **argv) {
     // Check against invalid args
     if (flag > 3 || flag < 0)
 	fprintf(stderr, "flag %d has no meaning\nrunning in standard mode...\n", flag);
-    else if (numpoints < 0) {
-	fprintf(stderr, "numpoints must be greater than 0\n");
+    else if (numpoints <= 1) {
+	fprintf(stderr, "numpoints must be greater than 1\n");
 	exit(1);
     }
-    else if (numtrials < 0) {
+    else if (numtrials <= 0) {
 	fprintf(stderr, "numtrials must be greater than 0\n");
 	exit(1);
     }
