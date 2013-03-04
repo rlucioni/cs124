@@ -56,7 +56,7 @@ graph *graph_generate_euclidean(int dimensions, int numpoints) {
 	}
     }
 
-    int max_width_cutoff = 1000;
+    int max_width_cutoff = 5000;
     float max_width = (dimensions == 2) ? 0.05 : (dimensions == 3) ? 0.15 : 0.3;
 
     int e = 0;
