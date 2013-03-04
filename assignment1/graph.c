@@ -5,6 +5,7 @@
 #include <string.h>
 #include <stdio.h>
 #include <assert.h>
+#include <math.h>
 
 #define SQUARE(x) ((x) * (x))
 #define SWAP(x,y) { a ^= b; b ^= a; a ^= b; }
@@ -17,28 +18,35 @@ static void graph_edge_merge(edge *, int, int, int, edge *);
 graph *graph_generate_0(int numpoints) {
     graph *g = (graph *) malloc(sizeof(graph));
     g->num_nodes = numpoints;
-    g->num_edges = (numpoints - 1) * numpoints / 2;
+    g->num_edges = numpoints;
     g->list = (edge *) malloc(sizeof(edge) * g->num_edges);
 
+    int max_width_cutoff = 10000;
+    float max_width = .002;
+    
     int e = 0;
     for (int i = 1; i < numpoints; ++i) {
 	for (int j = 0; j < i; ++j) {
 	    float w = (float) rand() / RAND_MAX;
-	    if (numpoints < 10000 || w < 0.002) {
+	    if (numpoints < max_width_cutoff || w < max_width) {
+		if (e >= g->num_edges) {
+		    g->num_edges *= 2;
+		    g->list = realloc(g->list, sizeof(edge) * g->num_edges);
+		}
 		edge e_local = { .u = i, .v = j, .weight = w };
 		g->list[e++] = e_local;
 	    }
 	}
     }
     g->num_edges = e;
-
+    
     return g;
 }
 
 graph *graph_generate_euclidean(int dimensions, int numpoints) {
     graph *g = (graph *) malloc(sizeof(graph));
     g->num_nodes = numpoints;
-    g->num_edges = (numpoints - 1) * numpoints / 2;
+    g->num_edges = numpoints;
     g->list = malloc(sizeof(edge) * g->num_edges);
 
     float ps[numpoints][dimensions]; // array of points, each of dimensions dimensions
@@ -47,6 +55,10 @@ graph *graph_generate_euclidean(int dimensions, int numpoints) {
 	    ps[i][d] = (float) rand() / RAND_MAX;
 	}
     }
+
+    int max_width_cutoff = 1000;
+    float max_width = (dimensions == 2) ? 0.05 : (dimensions == 3) ? 0.15 : 0.3;
+
     int e = 0;
     for (int i = 0; i < numpoints; ++i) {
 	for (int j = 0; j < i; ++j) {
@@ -55,8 +67,11 @@ graph *graph_generate_euclidean(int dimensions, int numpoints) {
 		distance += SQUARE(ps[i][d] - ps[j][d]);
 	    }
 	    float w = sqrt(distance);
-	    if (numpoints < 1000 || (dimensions == 2 && w < 0.05) ||
-		(dimensions == 3 && w < 0.15) || (dimensions == 4 && w < 0.3)) {
+	    if (numpoints < max_width_cutoff || w < max_width) {
+		if (e >= g->num_edges) {
+		    g->num_edges *= 2;
+		    g->list = realloc(g->list, sizeof(edge) * g->num_edges);
+		}
 		edge e_local = { .u = i, .v = j, .weight = w };
 		g->list[e++] = e_local;
 	    }
