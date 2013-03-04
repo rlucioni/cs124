@@ -11,9 +11,10 @@ typedef struct {
 } graph;
 
 typedef struct {
-    graph graph;
-    float mst_weight;
-} test_graph;
+    graph *graphs;
+    float *mst_weights;
+    int num_graphs;
+} test_graphs;
 
 // generate_graph(dimensions, numpoints)
 //    Returns a pointer to a graph of w/ numpoints vertices (nodes). 
@@ -24,5 +25,5 @@ void graph_free(graph *g);
 void graph_edge_sort(graph *g);
 
 int graph_run_tests();
-test_graph *graph_test_graphs();
+test_graphs *graph_test_graphs();
 void graph_print(graph *g);

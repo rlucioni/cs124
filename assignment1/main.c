@@ -3,6 +3,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
+#include <math.h>
 
 float max_weight = 0.0;
 
@@ -41,7 +42,7 @@ float kruskals(graph *input_graph) {
 }
 
 int main(int argc, char **argv) {
-    // process command line arguments
+    // process command line args
     if (argc != 5) {
 	    fprintf(stderr, "usage: %s flag numpoints numtrials dimension\n", argv[0]);
 	    exit(1);
@@ -51,13 +52,26 @@ int main(int argc, char **argv) {
     int numtrials = atoi(argv[3]);
     int dimension = atoi(argv[4]);
 
+    // check against invalid args
+    if (flag > 3 || flag < 0)
+	fprintf(stderr, "flag %d has no meaning\nrunning in standard mode...\n", flag);
+    else if (numpoints < 0) {
+	fprintf(stderr, "numpoints must be greater than 0\n");
+	exit(1);
+    }
+    else if (numtrials < 0) {
+	fprintf(stderr, "numtrials must be greater than 0\n");
+	exit(1);
+    }
+    else if (dimension > 4 || dimension == 1 || dimension < 0) {
+	fprintf(stderr, "dimension 0 or in range [2,...,4]\n");
+	exit(1);
+    }
+
     if (flag == 1) {
-        test_graph *test_array = graph_test_graphs();
-	// some test comparisons may fail because of the inherent inaccuracy in
-	// floating point arithmetic
-	int length = 4;
-        for (int n = 0; n < length; n++) { 
-            if (test_array[n].mst_weight == kruskals(&test_array[n].graph))
+        test_graphs *tests = graph_test_graphs();
+        for (int n = 0; n < tests->num_graphs; n++) { 
+            if (fabsf(tests->mst_weights[n] - kruskals(&tests->graphs[n])) < 0.00001)
                 printf("TEST %d: PASS\n", n);
             else {
                 printf("TEST %d: FAIL\n", n);
@@ -84,9 +98,7 @@ int main(int argc, char **argv) {
     srand(time(NULL));
     for (int i = 0; i < numtrials; ++i) {
 	graph *g = graph_generate(dimension, numpoints);
-	//printf("GRAPH GENERATED\n");
 	running_total += kruskals(g);
-    //printf("KRUSKALS COMPLETE\n\n");
 	graph_free(g);
     }
 

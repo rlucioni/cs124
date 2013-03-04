@@ -102,17 +102,14 @@ void graph_free(graph *g) {
 void graph_edge_merge(edge *src, int s1, int s2, int end, edge *dest) {
     int i, l, r;
     for (i = s1, l = s1, r = s2; l < s2 && r < end; ++i) 
-	//dest[i] = (src[l].weight <= src[r].weight) ? src[l++] : src[r++];
-	memcpy(&dest[i], (src[l].weight <= src[r].weight) ? &src[l++] : &src[r++], sizeof(edge));
+	dest[i] = (src[l].weight <= src[r].weight) ? src[l++] : src[r++];
     if (l < s2) {
 	for (; i < end; ++i, ++l)
-	    //dest[i] = src[l];	
-	    memcpy(&dest[i], &src[l], sizeof(edge));
+	    dest[i] = src[l];	
     }
     else {
 	for (; i < end; ++i, ++r) 
-	    //dest[i] = src[r];	
-	    memcpy(&dest[i], &src[r], sizeof(edge));
+	    dest[i] = src[r];	
     }
 }
 
@@ -199,127 +196,51 @@ int test_graph_generate_euclidean() {
     return 0;
 }
 
-int test_graph_edge_merge() {
-    /*
-    // duplicate
-    edge d2[2] = { { 0, 0, .5}, { 1, 1, .5} };
-    edge d3[3] = { { 0, 0, .5}, { 1, 1, .5}, { 2, 2, .5} };
-    edge d4[4] = { { 0, 0, .5}, { 1, 1, .5}, { 2, 2, .5}, { 3, 3, .5} };
-    edge d5[5] = { { 0, 0, .5}, { 1, 1, .5}, { 2, 2, .5}, { 3, 3, .5}, { 4, 4, .5} };
-
-    // sorted
-    edge s2[2] = { { 0, 0, .1}, { 1, 1, .2} };
-    edge s3[3] = { { 0, 0, .1}, { 1, 1, .2}, { 2, 2, .3} };
-    edge s4[4] = { { 0, 0, .1}, { 1, 1, .2}, { 2, 2, .3}, { 3, 3, .4} };
-    edge s5[5] = { { 0, 0, .1}, { 1, 1, .2}, { 2, 2, .3}, { 3, 3, .4}, { 4, 4, .5} };
-
-    // unsorted/interleaved
-    edge u2[2] = { { 1, 1, .2}, { 0, 0, .1} };
-    edge u3[3] = { { 0, 0, .1}, { 2, 2, .3}, { 1, 1, .2} };
-    edge u4[4] = { { 0, 0, .1}, { 3, 3, .4}, { 1, 1, .2}, { 2, 2, .3} };
-    edge u5[5] = { { 0, 0, .1}, { 2, 2, .3}, { 4, 4, .5}, { 1, 1, .2}, { 3, 3, .4} };
-
-    graph_edge_merge(d2, 0, 1, 2);
-    graph_edge_merge(d3, 0, 2, 3);
-    graph_edge_merge(d4, 0, 2, 4);
-    graph_edge_merge(d5, 0, 3, 5);
-    assert((d2 == { { 0, 0, .5}, { 1, 1, .5} }));
-    assert((d3 == { { 0, 0, .5}, { 1, 1, .5}, { 2, 2, .5} }));
-    assert((d4 == { { 0, 0, .5}, { 1, 1, .5}, { 2, 2, .5}, { 3, 3, .5} }));
-    assert((d5 == { { 0, 0, .5}, { 1, 1, .5}, { 2, 2, .5}, { 3, 3, .5}, { 4, 4, .5} }));
-
-    graph_edge_merge(s2, 0, 1, 2);
-    graph_edge_merge(s3, 0, 2, 3);
-    graph_edge_merge(s4, 0, 2, 4);
-    graph_edge_merge(s5, 0, 3, 5);
-    assert(s2[2] == { { 0, 0, .1}, { 1, 1, .2} });
-    assert(s3[3] == { { 0, 0, .1}, { 1, 1, .2}, { 2, 2, .3} });
-    assert(s4[4] == { { 0, 0, .1}, { 1, 1, .2}, { 2, 2, .3}, { 3, 3, .4} });
-    assert(s5[5] == { { 0, 0, .1}, { 1, 1, .2}, { 2, 2, .3}, { 3, 3, .4}, { 4, 4, .5} });
-
-    graph_edge_merge(u2, 0, 1, 2);
-    graph_edge_merge(u3, 0, 2, 3);
-    graph_edge_merge(u4, 0, 2, 4);
-    graph_edge_merge(u5, 0, 3, 5);
-    assert(u2[2] == { { 0, 0, .1}, { 1, 1, .2} });
-    assert(u3[3] == { { 0, 0, .1}, { 1, 1, .2}, { 2, 2, .3} });
-    assert(u4[4] == { { 0, 0, .1}, { 1, 1, .2}, { 2, 2, .3}, { 3, 3, .4} });
-    assert(u5[5] == { { 0, 0, .1}, { 1, 1, .2}, { 2, 2, .3}, { 3, 3, .4}, { 4, 4, .5} });
-    */
-    return 0;
-}
-
-int test_graph_edge_sort() {
-    /*
-    // single
-    edge l1[1] = { { 0, 0, .1} };
-    
-    // duplicate
-    edge d2[2] = { { 0, 0, .5}, { 1, 1, .5} };
-    edge d3[3]; = { { 0, 0, .5}, { 1, 1, .5}, { 2, 2, .5} };
-    edge d4[4]; = { { 0, 0, .5}, { 1, 1, .5}, { 2, 2, .5}, { 3, 3, .5} };
-    edge d5[5]; = { { 0, 0, .5}, { 1, 1, .5}, { 2, 2, .5}, { 3, 3, .5}, { 4, 4, .5} };
-
-    // sorted
-    edge s2[2] = { { 0, 0, .1}, { 1, 1, .2} };
-    edge s3[3] = { { 0, 0, .1}, { 1, 1, .2}, { 2, 2, .3} };
-    edge s4[4] = { { 0, 0, .1}, { 1, 1, .2}, { 2, 2, .3}, { 3, 3, .4} };
-    edge s5[5] = { { 0, 0, .1}, { 1, 1, .2}, { 2, 2, .3}, { 3, 3, .4}, { 4, 4, .5} };
-
-    // unsorted/interleaved
-    edge u2[2] = { { 1, 1, .2}, { 0, 0, .1} };
-    edge u3[3] = { { 0, 0, .1}, { 2, 2, .3}, { 1, 1, .2} };
-    edge u4[4] = { { 0, 0, .1}, { 3, 3, .4}, { 1, 1, .2}, { 2, 2, .3} };
-    edge u5[5] = { { 0, 0, .1}, { 2, 2, .3}, { 4, 4, .5}, { 1, 1, .2}, { 3, 3, .4} };
-
-    graph g = { .list = &l1, .num_nodes = 1, .num_edges = 2};
-        graph_edge_sort(&g);
-    */
-    return 0;
-}
 
 int graph_run_tests() {
     test_graph_generate_0();
     test_graph_generate_euclidean();
-    test_graph_edge_merge();
-    test_graph_edge_sort();
 
     return 0;
 }
 
-test_graph *graph_test_graphs() {
-    test_graph *tgs = (test_graph *) malloc(sizeof(test_graph) * 4);
-    edge *l1 = malloc(sizeof(edge) * 0);
-    edge *l2 = malloc(sizeof(edge) * 1);
-    edge *l3 = malloc(sizeof(edge) * 3);
-    edge *l4 = malloc(sizeof(edge) * 6);
-    edge l2_local[1] = { { .u = 0, .v = 1, .weight = 0.5 } }; 
-    edge l3_local[3] = { { .u = 0, .v = 1, .weight = 0.1 }, { .u = 1, .v = 2, .weight = 0.7 }, { .u = 2, .v = 0, .weight = 0.5 } };
-    edge l4_local[6] = { { .u = 0, .v = 1, .weight = 1.0 }, { .u = 0, .v = 2, .weight = 0.6 }, { .u = 0, .v = 3, .weight = 0.4 }, 
+test_graphs *graph_test_graphs() {
+    test_graphs *graphs = (test_graphs *) malloc(sizeof(test_graphs));
+    graphs->num_graphs = 4;
+    graphs->graphs = malloc(sizeof(edge) * graphs->num_graphs);
+    graphs->mst_weights = malloc(sizeof(float) * graphs->num_graphs);
+
+    edge *l0 = malloc(sizeof(edge) * 0);
+    edge *l1 = malloc(sizeof(edge) * 1);
+    edge *l2 = malloc(sizeof(edge) * 3);
+    edge *l3 = malloc(sizeof(edge) * 6);
+    edge l1_local[1] = { { .u = 0, .v = 1, .weight = 0.5 } }; 
+    edge l2_local[3] = { { .u = 0, .v = 1, .weight = 0.1 }, { .u = 1, .v = 2, .weight = 0.7 }, { .u = 2, .v = 0, .weight = 0.5 } };
+    edge l3_local[6] = { { .u = 0, .v = 1, .weight = 1.0 }, { .u = 0, .v = 2, .weight = 0.6 }, { .u = 0, .v = 3, .weight = 0.4 }, 
 		 { .u = 1, .v = 2, .weight = 0.3 }, { .u = 1, .v = 3, .weight = 0.1 }, { .u = 2, .v = 3, .weight = 0.2 } };
-    memcpy(l2, &l2_local, sizeof(edge) * 1);
-    memcpy(l3, &l3_local, sizeof(edge) * 3);
-    memcpy(l4, &l4_local, sizeof(edge) * 6);
+    memcpy(l1, &l1_local, sizeof(edge) * 1);
+    memcpy(l2, &l2_local, sizeof(edge) * 3);
+    memcpy(l3, &l3_local, sizeof(edge) * 6);
 
-    tgs[0].graph.list = l1;
-    tgs[0].graph.num_nodes = 1;
-    tgs[0].graph.num_edges = 0;
-    tgs[0].mst_weight = 0.0;
+    graphs->graphs[0].list = l0;
+    graphs->graphs[0].num_nodes = 1;
+    graphs->graphs[0].num_edges = 0;
+    graphs->mst_weights[0] = 0.0;
 
-    tgs[1].graph.list = l2;
-    tgs[1].graph.num_nodes = 2;
-    tgs[1].graph.num_edges = 1;
-    tgs[1].mst_weight = 0.5;
+    graphs->graphs[1].list = l1;
+    graphs->graphs[1].num_nodes = 2;
+    graphs->graphs[1].num_edges = 1;
+    graphs->mst_weights[1] = 0.5;
 
-    tgs[2].graph.list = l3;
-    tgs[2].graph.num_nodes = 3;
-    tgs[2].graph.num_edges = 3;
-    tgs[2].mst_weight = 0.6;
+    graphs->graphs[2].list = l2;
+    graphs->graphs[2].num_nodes = 3;
+    graphs->graphs[2].num_edges = 3;
+    graphs->mst_weights[2] = 0.6;
 
-    tgs[3].graph.list = l4;
-    tgs[3].graph.num_nodes = 4;
-    tgs[3].graph.num_edges = 6;
-    tgs[3].mst_weight = 0.7;
+    graphs->graphs[3].list = l3;
+    graphs->graphs[3].num_nodes = 4;
+    graphs->graphs[3].num_edges = 6;
+    graphs->mst_weights[3] = 0.7;
 
-    return tgs;
+    return graphs;
 }
