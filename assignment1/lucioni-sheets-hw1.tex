@@ -11,12 +11,26 @@
 \header{1}{March 5, 2013, at 11:40 AM}{}{}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\section{Quantitative Results}
+\section*{Quantitative Results}
 \subsection*{Dimension 0 - Weights Assigned Randomly}
 
 The following is a graph showing the average tree size over 5 trials for several values of $n$: 
 \begin{center}
-\includegraphics[scale=0.8]{graphs/kruskals-dimension-0.pdf}
+\includegraphics[scale=0.6]{graphs/kruskals-dimension-0.pdf}
+\begin{verbatim}
+0.929531 16 5 0
+0.967641 32 5 0
+1.137753 64 5 0
+1.185701 128 5 0
+1.173584 256 5 0
+1.178243 512 5 0
+1.192734 1024 5 0
+1.209832 2048 5 0
+1.204681 4096 5 0
+1.198778 8192 5 0
+1.203032 16384 5 0
+1.202110 32768 5 0
+\end{verbatim}
 \end{center}
 
 A simple function that describes this plot is $f(n) \approx 1.2$
@@ -27,9 +41,23 @@ A simple function that describes this plot is $f(n) \approx 1.2$
 The following is a graph showing the average tree size over 5 trials for several values of $n$:
 \begin{center}
 \includegraphics[scale=0.8]{graphs/kruskals-dimension-2.pdf}
+\begin{verbatim}
+2.818149 16 5 2
+3.872131 32 5 2
+5.475579 64 5 2
+7.691335 128 5 2
+10.648638 256 5 2
+14.866658 512 5 2
+20.792080 1024 5 2
+29.512669 2048 5 2
+41.692554 4096 5 2
+58.925728 8192 5 2
+83.156471 16384 5 2
+117.546494 32768 5 2
+\end{verbatim}
 \end{center}
 
-Function is of the form $f(n)=an^b$ where $a > 0$ and $\frac{1}{2} \leq b \leq 1$. From mathematica on 2-dimensions we achieved $a=0.647963$ and $b=0.50009$ as the best fit values for this function giving us the following best guess for $f(n)$:
+This curve is best described by a function of the form $f(n)=an^b$, where $a > 0$ and $\frac{1}{2} \leq b \leq 1$. Using Mathematica's {\tt FindFit} function in conjunction with the data used to generate the above graph, we achieved $a=0.647963$ and $b=0.50009$ as the best fit values for this function, giving us the following best guess for $f(n)$:
 \[f(n) \approx 0.65 n^{\frac{1}{2}}\]
 
 \pagebreak
@@ -38,9 +66,23 @@ Function is of the form $f(n)=an^b$ where $a > 0$ and $\frac{1}{2} \leq b \leq 1
 The following is a graph showing the average tree size over 5 trials for several values of $n$:
 \begin{center}
 \includegraphics[scale=0.8]{graphs/kruskals-dimension-3.pdf}
+\begin{verbatim}
+4.566855 16 5 3
+6.925250 32 5 3
+11.133249 64 5 3
+17.818338 128 5 3
+27.646692 256 5 3
+43.728298 512 5 3
+68.244339 1024 5 3
+107.170555 2048 5 3
+168.915375 4096 5 3
+266.453552 8192 5 3
+422.085632 16384 5 3
+667.827393 32768 5 3
+\end{verbatim}
 \end{center}
 
-Function is of the form $f(n)=an^b$ where $a > 0$ and $\frac{1}{2} \leq b \leq 1$. From mathematica on 2-dimensions we achieved $a=0.68055$ and $b=0.662729$ as the best fit values for this function giving us the following best guess for $f(n)$:
+This curve is best described by a function of the form $f(n)=an^b$, where $a > 0$ and $\frac{1}{2} \leq b \leq 1$. Using Mathematica's {\tt FindFit} function in conjunction with the data used to generate the above graph, we achieved $a=0.68055$ and $b=0.662729$ as the best fit values for this function, giving us the following best guess for $f(n)$:
 \[f(n) \approx 0.68n^{\frac{2}{3}}\]
 
 \pagebreak
@@ -49,17 +91,50 @@ Function is of the form $f(n)=an^b$ where $a > 0$ and $\frac{1}{2} \leq b \leq 1
 The following is a graph showing the average tree size over 5 trials for several values of $n$:
 \begin{center}
 \includegraphics[scale=0.8]{graphs/kruskals-dimension-4.pdf}
+\begin{verbatim}
+6.159772 16 5 4
+10.294616 32 5 4
+17.242434 64 5 4
+28.670132 128 5 4
+47.566528 256 5 4
+78.802025 512 5 4
+129.762085 1024 5 4
+217.340424 2048 5 4
+361.436401 4096 5 4
+602.498047 8192 5 4
+1007.845337 16384 5 4
+1688.796265 32768 5 4
+\end{verbatim}
 \end{center}
 
-Function is of the form $f(n)=an^b$ where $a > 0$ and $\frac{1}{2} \leq b \leq 1$. From mathematica on 2-dimensions we achieved $a=0.744403$ and $b=0.74331$ as the best fit values for this function giving us the following best guess for $f(n)$:
+This curve is best described by a function of the form $f(n)=an^b$, where $a > 0$ and $\frac{1}{2} \leq b \leq 1$. Using Mathematica's {\tt FindFit} function in conjunction with the data used to generate the above graph, we achieved $a=0.744403$ and $b=0.74331$ as the best fit values for this function, giving us the following best guess for $f(n)$:
 \[f(n) \approx 0.74n^{\frac{3}{4}}\]
-\pagebreak
-\section*{Discussion}
 
-explain choice of Kruskal's, and our approach to helping the program handle large $n$ (we threw out heavy edges which were unlikely to be included in the MST; we plotted the heaviest edges included in the MSTs for each dimension, then based our limit off of the data we gathered; throwing away edges in this manner will never lead to a situation where the program returns the wrong tree because we are truncating the list that Kruskal's pulls edges from at a point past where the algorithm stops using the array)\\ \\
-Are the growth rates (the f(n)) surprising? Can you come up with an explanation for them? \\ \\
-How long does it take your algorithm to run? Does this make sense? Do you notice things like the cache size of your computer having an effect? \\ \\
-Did you have any interesting experiences with the random number generator? Do you trust it? \\ \\
+\section*{Discussion}
+\subsection*{Choice of Algorithm}
+We decided to use Kruskal's algorithm instead of Prim's algorithm because we wanted to work with something new. We both implemented heaps (priority queues) last year in CS51, and Matt implemented Prim's algorithm for his CS51 project. In addition, we felt that the programming work required to fully implement Kruskal's algorithm would parallelize better than the work required to implement Prim's algorithm. That is, we thought our mutual time would be better spent implementing a disjoint set library, an efficient sort procedure, and the pseudocode for Kruskal's than it would be implementing a heap and the pseudocode for Prim's.
+
+\subsection*{Implementation Details}
+DESCRIBE CODE STRUCTURE
+
+\subsubsection*{Memory Leaks}
+MIGHT WANT TO COMMENT ON THIS
+
+\subsubsection*{Pseudorandom Number Generator}
+We seeded our pseudorandom number generator (PRNG) using the system clock. We had one interesting issue for smaller values of $n$ where the PRNG was not reseeded for runs completed in quick succession, since the system clock had not updated itself between runs. HOW DID WE FIX THIS?
+
+\subsection*{Optimization}
+In order to handle large $n$, we simplified the graph by discarding heavy edges unlikely to be included by Kruskal's algorithm in the MST. We derived our definition of what constitutes a 	``heavy" edge by running our program for $n$ equal to powers of 2 through 8192 for each dimension (0, 2, 3, and 4) and logging the heaviest edge included in the MST each time.\footnote{Passing {\tt randmst} the flag 3 will cause it to print out the heaviest edge in the MST.} We picked a threshold weight based on these data which we then used to decide whether or not an edge should be included in the array sorted by Kruskal's algorithm during each run. This sort is the slowest part of Kruskal's, and decreasing the number of edges we need to sort consequently accelerates the execution time of Kruskal's. Discarding edges in this manner will never lead to a situation where the program returns the wrong tree because we are truncating the array that Kruskal's pulls edges from at a point beyond that needed by the algorithm to construct an MST. That is, we are throwing out edges we know will never be used. As such, our optimized program must give the same result as a non-optimized program.
+
+\subsection*{Growth Rates}
+We were most surprised by the growth rate of the size of the MST for dimension 0. We had not expected a constant function to describe the growth of any of the dimensions. We can explain this constant growth function by noting that as the number of nodes and edges in the graph increases exponentially, the number of extremely light edges available to the algorithm to include in an MST also increases exponentially. This idea is key to understanding the growth of the MSTs for the other dimensions. It also explains why our optimization by truncation works well, since it suggest that we are throwing out an increasing number of unnecessary edges.
+
+We were also surprised to see, for dimensions 2, 3, and 4, how the value of the constant $b$ appears to be approximately equal to $\frac{\text{dimension - 1}}{\text{dimension}}$. HOW DO WE EXPLAIN THIS? 
+
+\subsection*{Runtime}
+How long does it take your algorithm to run? Does this make sense? Do you notice things like the cache size of your computer having an effect?
+
+On average, our program (graph generation \emph{and} Kruskal's) takes under 10 seconds to complete a single run on a graph for which $n = 40000$ for all dimensions. On average, our program takes 90 seconds to complete a single run on a graph where $n = 2^{17} = 131072$ for dimension 0, and X seconds for dimension 4. Given our optimization via truncation, these runtimes make sense. We did not notice the cache size of our computers having an effect on our runtime.
 
 
 \end{document}
