@@ -16,37 +16,43 @@
 
 The following is a graph showing the average tree size over 5 trials for several values of $n$: 
 \begin{center}
-\includegraphics[scale=0.8]{kruskals-dimension-0.pdf}
+\includegraphics[scale=0.8]{graphs/kruskals-dimension-0.pdf}
 \end{center}
 
-A simple function that describes this plot is $f(n) = 1.2$
+A simple function that describes this plot is $f(n) \approx 1.2$
+
 \pagebreak
 \subsection*{Dimension 2 - Unit Square}
 
 The following is a graph showing the average tree size over 5 trials for several values of $n$:
 \begin{center}
-\includegraphics[scale=0.8]{kruskals-dimension-2.pdf}
+\includegraphics[scale=0.8]{graphs/kruskals-dimension-2.pdf}
 \end{center}
 
-A simple function that describes this plot is $f(n) = 0.65 \sqrt{n}$
+Function is of the form $f(n)=an^b$ where $a > 0$ and $\frac{1}{2} \leq b \leq 1$. From mathematica on 2-dimensions we achieved $a=0.647963$ and $b=0.50009$ as the best fit values for this function giving us the following best guess for $f(n)$:
+\[f(n) \approx 0.65 n^{\frac{1}{2}}\]
+
 \pagebreak
 \subsection*{Dimension 3 - Unit Cube}
 
 The following is a graph showing the average tree size over 5 trials for several values of $n$:
 \begin{center}
-\includegraphics[scale=0.8]{kruskals-dimension-3.pdf}
+\includegraphics[scale=0.8]{graphs/kruskals-dimension-3.pdf}
 \end{center}
 
-A simple function that describes this plot is $f(n) = 3.25 \sqrt{n}$
+Function is of the form $f(n)=an^b$ where $a > 0$ and $\frac{1}{2} \leq b \leq 1$. From mathematica on 2-dimensions we achieved $a=0.68055$ and $b=0.662729$ as the best fit values for this function giving us the following best guess for $f(n)$:
+\[f(n) \approx 0.68n^{\frac{2}{3}}\]
+
 \pagebreak
 \subsection*{Dimension 4 - Hypercube}
 
 The following is a graph showing the average tree size over 5 trials for several values of $n$:
 \begin{center}
-\includegraphics[scale=0.8]{kruskals-dimension-4.pdf}
+\includegraphics[scale=0.8]{graphs/kruskals-dimension-4.pdf}
 \end{center}
 
-A simple function that describes this plot is $f(n) = 8.3 \sqrt{n}$
+Function is of the form $f(n)=an^b$ where $a > 0$ and $\frac{1}{2} \leq b \leq 1$. From mathematica on 2-dimensions we achieved $a=0.744403$ and $b=0.74331$ as the best fit values for this function giving us the following best guess for $f(n)$:
+\[f(n) \approx 0.74n^{\frac{3}{4}}\]
 \pagebreak
 \section*{Discussion}
 
