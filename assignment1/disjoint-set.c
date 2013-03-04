@@ -1,10 +1,10 @@
 #include "disjoint-set.h"
-#ifndef INC_ASSERT_H
-#define INC_ASSERT_H
 #include <assert.h>
 #include <stdlib.h>
 #include <string.h>
-#endif /* INC_HEADER_H */
+
+// PROTOTYPEs
+int ds_find(ds_forest *, int);
 
 ds_forest *ds_makeforest(int size) {
     ds_forest *f = (ds_forest *) malloc(sizeof(ds_forest));
