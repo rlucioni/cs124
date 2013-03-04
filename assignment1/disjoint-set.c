@@ -6,7 +6,7 @@
 // PROTOTYPEs
 int ds_find(ds_forest *, int);
 
-ds_forest *ds_makeforest(int size) {
+ds_forest *ds_make_forest(int size) {
     ds_forest *f = (ds_forest *) malloc(sizeof(ds_forest));
     f->p = (int *) malloc(sizeof(int) * size);
     f->rank = (int *) malloc(sizeof(int) * size);
@@ -16,13 +16,13 @@ ds_forest *ds_makeforest(int size) {
     return f;
 }
 
-void ds_burnforest(ds_forest *f) {
+void ds_burn_forest(ds_forest *f) {
     free(f->p);
     free(f->rank);
     free(f);
 }
 
-void ds_makeset(ds_forest *f, int x) {
+void ds_make_set(ds_forest *f, int x) {
     f->p[x] = x;
     f->rank[x] = 0;
 }
@@ -51,11 +51,11 @@ int ds_union(ds_forest *f, int x, int y) {
 
 int ds_run_tests() {
     int nodes = 12;
-    ds_forest *f = ds_makeforest(nodes);
+    ds_forest *f = ds_make_forest(nodes);
 
     // makeset
     for (int i = 0; i < nodes; ++i) {
-	ds_makeset(f, i);
+	ds_make_set(f, i);
 	assert(f->rank[i] == 0);
 	assert(f->p[i] == i);
 

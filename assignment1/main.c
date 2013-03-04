@@ -21,12 +21,12 @@ float kruskals(graph *input_graph) {
     graph_edge_sort(input_graph);
 
     // Allocate memory for disjoint set forest
-    ds_forest *f = ds_makeforest(input_graph->num_nodes);
+    ds_forest *f = ds_make_forest(input_graph->num_nodes);
     
     // For each vertex: 
     //    Makeset containing vertex
     for (int n = 0; n < input_graph->num_nodes; n++)
-        ds_makeset(f, n);
+        ds_make_set(f, n);
 
     // For each edge:
     //    Check whether the vertices are connected and if not add the edge
@@ -46,7 +46,7 @@ float kruskals(graph *input_graph) {
     }
 
     // Free memory of disjoint set forest
-    ds_burnforest(f);
+    ds_burn_forest(f);
 
     // Return MST weight
     return mst_weight;
