@@ -6,7 +6,7 @@
 #  -g    adds debugging information to the executable file
 #  -Wall turns on most, but not all, compiler warnings
 CC = gcc
-CFLAGS = -std=c99 -g -Wall -Werror -O2
+CFLAGS = -std=c99 -g -lm -Wall -Werror -O2
 
 # typing 'make' will invoke the first target entry in the file 
 default: randmst
