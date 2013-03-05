@@ -64,7 +64,7 @@ int main(int argc, char **argv) {
     int dimension = atoi(argv[4]);
 
     // Check against invalid args
-    if (flag > 3 || flag < 0)
+    if (flag > 4 || flag < 0)
 	fprintf(stderr, "flag %d has no meaning\nrunning in standard mode...\n", flag);
     else if (numpoints <= 1) {
 	fprintf(stderr, "numpoints must be greater than 1\n");
@@ -105,11 +105,14 @@ int main(int argc, char **argv) {
     
     // Run tests maintaining avg.
     // Seed rand here as opposed to w/in generate function to avoid reseeding
+    int time_total = 0;;
     srand(time(NULL));
     float running_total = 0.0;
     for (int i = 0; i < numtrials; ++i) {
 	graph *g = graph_generate(dimension, numpoints);
+	clock_t start = clock();
 	running_total += kruskals(g);
+	time_total += clock() - start;
 	graph_free(g);
     }
 
@@ -119,6 +122,16 @@ int main(int argc, char **argv) {
     //    edge size
     if (flag == 3) {
 	printf("Maximum Edge Weight: %f\n", max_weight);
+	return 0;
+    }
+
+    // Flag 4:
+    //    Print out average runtime of algorithm.
+    //    Used for determining alogrithmic runtime.
+    else if (flag == 4) {
+	// Output styled for Mathematica/Woflram Alpha
+	int msec = time_total * 1000 / CLOCKS_PER_SEC;
+	printf("{%d, %f}\n", numpoints, (float) msec / numtrials);
 	return 0;
     }
 
