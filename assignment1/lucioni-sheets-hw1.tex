@@ -209,7 +209,47 @@ f(n) = \dfrac{d-1}{d}n^{\frac{d-1}{d}} \text{where $d$ is the \# of dimensions}
 \]
 \hspace{5mm} We are not sure if this trend holds for higher values of $d$, but it is certainly worth noting. If this trend does hold it suggests that as the number of dimensions approaches infinity, the function approaches $f(n) = n$. Since an MST must contain $n - 1$ edges to connect all vertices, this indicates that the average edge weight in an MST as $d$ approaches infinity is approximately 1. It is hard to reason about what this means in the context of infinite dimensional space since it is hard to reason about infinite dimensional space. This is all dependent on the above trend continuing for higher and higher values of $d$.
 \subsection*{Runtime}
-\hspace{5mm} On average, our program (graph generation \emph{and} Kruskal's) takes under 10 seconds to complete a single run on a graph for which $n = 40000$ for all dimensions. On average, our program takes 90 seconds to complete a single run on a graph where $n = 2^{17} = 131072$ for dimension 0, and X seconds for dimension 4. Given our optimization via truncation, these runtimes make sense. We did not notice the cache size of our computers having an effect on our runtime.
+\hspace{5mm} The following chart details how long our implementation of Kruskal's algorithm takes run for various values of $n$, measured in milliseconds \emph{of CPU time} for dimension 0.\footnote{Passing {\tt randmst} the flag 4 will cause it to print out runtimes.} Note that this includes time spent sorting the edge array but \emph{not} time spent performing graph generation.
+
+\begin{center}
+\begin{tabular}{ | r | l |}
+\hline
+\bf{\itshape{n}} & \bf{Execution Time (ms) } \\
+\hline
+16 & 0.0 \\
+\hline
+32 & 0.0 \\
+\hline
+64 & 0.0 \\
+\hline
+128 & 1.0 \\
+\hline
+256 & 4.5 \\
+\hline
+512 & 3.0 \\
+\hline
+1024 & 86.5 \\
+\hline
+2048 & 382.0 \\
+\hline
+4096 & 1665.0 \\
+\hline
+8192 & 7055.0 \\
+\hline
+16384 & 44.5 \\
+\hline
+32768 & 195.0 \\
+\hline
+65536 & 851.0 \\
+\hline
+131072 & 3513.0 \\
+\hline
+262144 & 14815.0 \\
+\hline
+\end{tabular}
+\end{center}
+
+For values of $n$ in the range $[2, 10000)$, the running time is of the form $O(n\log n)$, verified by comparison with the curve in Wolfram$|$Alpha. Furthermore, for values of $n$ in there range $[10000, \infty)$, the running time is also of the form $O(n\log n)$. The change that occurs at $n=10000$ is a direct result of our implementation of the the previously described optimization. For dimension 0, the optimization kicks in at values of $n \geq 10000$; for dimensions 2 through 4, it kicks in at $n=5000$. On either side of the optimization cutoff, the running time behaves as expected for Kruskal's. Because we use mergesort, we expect a total running time of $O(n \log n + n \log^*n) = O(n \log n)$. It is interesting to note that after the optimization threshold is hit, the $n\log n$ running time resumes. This results from the fact that we used a hard cutoff for edge weight in our implementation. While the actual execution time of our algorithm is longer for larger dimensions, we only display execution times for dimension 0 because the asymptotic running time of our algorithm is not affected by the type of graph generated. We did not notice the cache size of our computers having an effect on our runtime.
 
 
 \end{document}
