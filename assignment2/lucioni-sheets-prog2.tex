@@ -8,29 +8,29 @@
 \newcommand{\solncolor}{red}
 \begin{document}
 
-\header{2}{March 5, 2013, at 11:40 AM}{}{}
+\header{2}{April 4, 2013, at 11:40 AM}{}{}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\section*{Analytical Solution}
+\section*{Analytical Approach}
 
-The conventional algorithm requires $n^3$ multiplications and $n^2(n-1)$ additions. Thus, the work required by the conventional algorithm is $n^3 + n^2(n-1)$, when $n \leq n_0$.
-
-Strassens's algorithm requires 7 matrix products per recurrence, 10 additions and subtractions when deriving the $P_1, \ldots, P_7$, and 8 additions and subtractions when manipulating the $P_i$'s to find the matrix sums. Therefore, the work required by Strassen's algorithm is represented by the recurrence $T(n) = 7T(\frac{n}{2}) + (10+8)\frac{n^2}{4} = 7T(\frac{n}{2}) + \frac{9}{2}n^2$ where $T(1) = 1$, when $n > n_0$. Using Mathematica, we find that the solution to this recurrence is $T(n) = 7^{(\log_2 n) + 1}-6 n^2$.
-
-This gives us the following function, which we want to minimize over all $n$:
+\hspace{4mm} The conventional algorithm requires $n^3$ multiplications and $n^2(n-1)$ additions. Thus, the work required by the conventional algorithm, used when $n \leq n_0$, is $n^3 + n^2(n-1) = 2n^3 - n^2$. Strassens's algorithm requires 7 matrix products per recurrence, 10 additions and subtractions when deriving the $P_1, \ldots, P_7$, and 8 additions and subtractions when manipulating the $P_i$'s to find the matrix sums. The work required by Strassen's algorithm, used when $n > n_0$, can be represented by the recurrence $T(n) = 7T(\frac{n}{2}) + (10+8)\frac{n^2}{4} = 7T(\frac{n}{2}) + \frac{9}{2}n^2$, where $T(1) = 1$. Using Mathematica, we find that the solution to this recurrence with the given initial condition is $T(n) = 7^{(\log_2 n) + 1}-6 n^2$. This gives us the following function, which we wish to minimize over all $n$:
 \[
     f(n)= 
 \begin{cases}
-    n^3 + n^2(n-1), & \text{if } n \leq n_0\\
     7^{(\log_2 n) + 1}-6 n^2, & \text{if } n > n_0 \\
+    2n^3 - n^2, & \text{if } n \leq n_0\\
 \end{cases}
 \]
 
-We can analytically determine the value of $n_0$ that optimizes the running time of the variant of Strassen's we are studying by setting both cases equal in $f$ equal and solving for $n$. Using Mathematica, we see that both sides are equal when $n = 1$ and $n \approx 654.031$. The former value of $n$ is uninteresting, since we know that the base case of Strassen's is the same as the conventional method. Thus, $n_0 \approx 654.031$.
+We can analytically determine the value of $n_0$ that optimizes the running time of the variant of Strassen's we are studying by setting equal both cases contained in $f$ and solving for $n$. Using Mathematica to solve the equation $7^{(\log_2 n) + 1}-6 n^2 = 2n^3 - n^2$, we see that both sides are equal when $n = 1$ and $n \approx 654.031$. The former value of $n$ is uninteresting, since we already know that the base case of Strassen's algorithm (i.e., when $n=1$) functions the same as the conventional method. Thus, we have analytically determined that $n_0 \approx 654.031$.
 
-\section*{Experimental Results}
+\section*{Experimental Approach}
 
 \section*{Discussion}
+
+How low was our cross-over point? \\
+What difficulties arose? \\
+What types of matrices did we multiply, and does this choice matter? \\
 
 \end{document}
 
