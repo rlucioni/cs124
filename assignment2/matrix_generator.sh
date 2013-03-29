@@ -29,8 +29,8 @@ do
 done
 
 # generate matrix where entries are randomly a real in [0,1]
-rm matrices_real.txt
-for ((i=1; i<=$((2*($d*$d))); i++))
-do
-    awk -v seed=$RANDOM 'BEGIN { srand(seed); printf("%f\n", rand()) }' >> matrices_real.txt
-done
+#rm matrices_real.txt
+#for ((i=1; i<=$((2*($d*$d))); i++))
+#do
+#    awk -v seed=$RANDOM 'BEGIN { srand(seed); printf("%f\n", rand()) }' >> matrices_real.txt
+#done

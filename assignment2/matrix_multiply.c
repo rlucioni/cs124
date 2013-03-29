@@ -9,7 +9,6 @@ void square_matrix_multiply(int *c, const int *a, const int *b, int dim) {
                 MELT(c, dim, i, j) += MELT(a, dim, i, k) * MELT(b, dim, k, j);
 }
 
-//#include "matrix_multiply_main.c"
 int main(int argc, char **argv) {
     // process command line arguments
     if (argc != 4) {
@@ -23,7 +22,8 @@ int main(int argc, char **argv) {
     assert(dim > 0);
 
     if (flag == 1) {
-        printf("run tests");
+       printf("TEST");
+       exit(0);
     }
 
     FILE *fp;
@@ -61,7 +61,8 @@ int main(int argc, char **argv) {
 
     // print diagonal elements
     for (i = 0; i < dim; i++)
-        printf("c[%d,%d] == %d\n", i, i, MELT(mc,dim,i,i));
+        //printf("c[%d,%d] == %d\n", i, i, MELT(mc,dim,i,i));
+        printf("%d\n", MELT(mc,dim,i,i));
 
     free(ma);
     free(mb);
