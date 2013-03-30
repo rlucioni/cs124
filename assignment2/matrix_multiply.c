@@ -1,8 +1,8 @@
 #include "matrix_multiply.h"
 // accesses the element in "matrix" of dimension "dim" at "row" and "column"
 #define MELT(matrix, dim, row, col) (matrix)[(row) * (dim) + (col)]
-#define CROSSOVER 10
-// int crossover;
+//#define CROSSOVER 10
+int crossover;
 
 void square_matrix_multiply(int *c, const int *a, const int *b, int dim) {
     for (int i = 0; i < dim; i++)
@@ -64,7 +64,8 @@ void ssub(int *e, const int *a, const int *b, const int *c, const int *d,
 //   | C  D |  | G H |     | CE + DG  CF + DH |
 //    -    -    -   -       -                -
 void strassen(int *c, const int *a, const int *b, int dim) {
-    if (dim <= CROSSOVER)
+    //if (dim <= CROSSOVER)
+    if (dim <= crossover)
 	square_matrix_multiply(c, a, b, dim);
     else {
 	// cutting into submatrices
@@ -123,15 +124,18 @@ void strassen(int *c, const int *a, const int *b, int dim) {
 
 int main(int argc, char **argv) {
     // process command line arguments
-    if (argc != 4) {
-        // fprintf(stderr, "usage: %s flag dimension inputfile crossover\n", argv[0]);
+    /*if (argc != 4) {
         fprintf(stderr, "usage: %s flag dimension inputfile\n", argv[0]);
+        exit(1);
+    }*/
+    if (argc != 5) {
+        fprintf(stderr, "usage: %s flag dimension inputfile crossover\n", argv[0]);
         exit(1);
     }
     int flag = atoi(argv[1]);
     int dim = atoi(argv[2]);
     char* inputfile = argv[3];
-    // int crossover = atoi(argv[4]);
+    crossover = atoi(argv[4]);
     
     assert(dim > 0);
 
