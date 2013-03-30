@@ -165,7 +165,10 @@ int main(int argc, char **argv) {
 
     int *mc = (int *) malloc(sizeof(int) * dim * dim);
         
-    square_matrix_multiply(mc, ma, mb, dim);
+     square_matrix_multiply(mc, ma, mb, dim);
+     // strassen's is currently sigfaulting - need to do more in place memory
+     //   maybe do some work in the input matrices...
+    //    strassen(mc, ma, mb, dim);
 
     // print diagonal elements
     for (i = 0; i < dim; i++)
