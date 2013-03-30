@@ -2,6 +2,7 @@
 // accesses the element in "matrix" of dimension "dim" at "row" and "column"
 #define MELT(matrix, dim, row, col) (matrix)[(row) * (dim) + (col)]
 #define CROSSOVER 10
+// int crossover;
 
 void square_matrix_multiply(int *c, const int *a, const int *b, int dim) {
     for (int i = 0; i < dim; i++)
@@ -63,7 +64,7 @@ void ssub(int *e, const int *a, const int *b, const int *c, const int *d,
 //   | C  D |  | G H |     | CE + DG  CF + DH |
 //    -    -    -   -       -                -
 void strassen(int *c, const int *a, const int *b, int dim) {
-    if (dim == CROSSOVER)
+    if (dim <= CROSSOVER)
 	square_matrix_multiply(c, a, b, dim);
     else {
 	// cutting into submatrices
@@ -123,12 +124,14 @@ void strassen(int *c, const int *a, const int *b, int dim) {
 int main(int argc, char **argv) {
     // process command line arguments
     if (argc != 4) {
+        // fprintf(stderr, "usage: %s flag dimension inputfile crossover\n", argv[0]);
         fprintf(stderr, "usage: %s flag dimension inputfile\n", argv[0]);
         exit(1);
     }
     int flag = atoi(argv[1]);
     int dim = atoi(argv[2]);
     char* inputfile = argv[3];
+    // int crossover = atoi(argv[4]);
     
     assert(dim > 0);
 
@@ -165,15 +168,15 @@ int main(int argc, char **argv) {
 
     int *mc = (int *) malloc(sizeof(int) * dim * dim);
         
-     square_matrix_multiply(mc, ma, mb, dim);
-     // strassen's is currently sigfaulting - need to do more in place memory
-     //   maybe do some work in the input matrices...
-    //    strassen(mc, ma, mb, dim);
+    //square_matrix_multiply(mc, ma, mb, dim);
+    // strassen's is currently segfaulting - need to do more in place memory
+    // maybe do some work in the input matrices...
+    strassen(mc, ma, mb, dim);
 
     // print diagonal elements
-    for (i = 0; i < dim; i++)
+    /*for (i = 0; i < dim; i++)
         //printf("c[%d,%d] == %d\n", i, i, MELT(mc,dim,i,i));
-        printf("%d\n", MELT(mc,dim,i,i));
+        printf("%d\n", MELT(mc,dim,i,i));*/
 
     free(ma);
     free(mb);
