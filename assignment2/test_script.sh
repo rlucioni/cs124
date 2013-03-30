@@ -1,14 +1,10 @@
-#!/bin/sh
+#!/bin/bash
 
-# make sure you pass in the right dimension as an argument!
+# takes dimension as an argument!!
 
-echo "BINARY MATRICES..."
-time ./strassen 0 $1 matrices_binary.txt
-echo ""
-echo "012 MATRICES..."
-time ./strassen 0 $1 matrices_012.txt
-echo ""
-echo "NEG MATRICES..."
-time ./strassen 0 $1 matrices_neg.txt
-#echo "REAL MATRICES..."
-#time ./strassen 0 $1 matrices_real.txt
+echo "TESTING CUTOFF VALUES ON 012 MATRICES OF DIMENSION $1..."
+for ((i=0; i<=1000; i++))
+do
+    echo -n $i
+    time ./strassen 0 $1 matrices_012.txt $i
+done
