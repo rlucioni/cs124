@@ -155,7 +155,7 @@ int main(int argc, char **argv) {
     // if not a power of 2, pad appropriately
     //    padding done to reach crossover + 2^n
     int32_t dim_pad = dim;
-    if (dim & (dim - 1) != 0) {
+    if ((dim & (dim - 1)) != 0) {
 	// Bit Twiddling Hack for finding next power of 2
 	//   http://graphics.stanford.edu/~seander/bithacks.html
 	//   -expects 32 bit architecture
@@ -195,15 +195,11 @@ int main(int argc, char **argv) {
 
     int32_t *mc = (int32_t *) malloc(sizeof(int32_t) * dim_pad * dim_pad);
         
-    //square_matrix_multiply(mc, ma, mb, dim_pad);
-    // strassen's is currently segfaulting - need to do more in place memory
-    // maybe do some work in the input matrices...
     strassen(mc, ma, mb, dim_pad);
 
     // print diagonal elements - does not read padding
-    /*for (i = 0; i < dim; i++)
-        //printf("c[%d,%d] == %d\n", i, i, MELT(mc,dim,i,i));
-        printf("%d\n", MELT(mc,dim,i,i));*/
+    for (i = 0; i < dim; i++)
+        printf("%d\n", MELT(mc,dim,i,i));
 
     free(ma);
     free(mb);
