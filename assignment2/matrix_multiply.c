@@ -159,47 +159,55 @@ int main(int argc, char **argv) {
 	// Bit Twiddling Hack for finding next power of 2
 	//   http://graphics.stanford.edu/~seander/bithacks.html
 	//   -expects 32 bit architecture
-	dim_pad--;
-	dim_pad |= dim_pad >> 1;
-	dim_pad |= dim_pad >> 2;
-	dim_pad |= dim_pad >> 4;
-	dim_pad |= dim_pad >> 8;
-	dim_pad |= dim_pad >> 16;
-	dim_pad++;
+        dim_pad--;
+        dim_pad |= dim_pad >> 1;
+        dim_pad |= dim_pad >> 2;
+        dim_pad |= dim_pad >> 4;
+        dim_pad |= dim_pad >> 8;
+        dim_pad |= dim_pad >> 16;
+        dim_pad++;
     }
+
     int32_t *ma = (int32_t *) malloc(sizeof(int32_t) * dim_pad * dim_pad);
     for (i = 0; i < dim_pad; i++)
         for (j = 0; j < dim_pad; j++) {
             // As per Piazza question #217, we assume the files being passed 
             // have the correct number of values (i.e., we don't check for EOF)
             if (i < dim && j < dim) {
-		(void) fscanf(fp, "%d", &elt); 
-		MELT(ma, dim_pad, i, j) = elt;
-	    }
-	    else
-		MELT(ma, dim_pad, i, j) = 0;
+                (void) fscanf(fp, "%d", &elt);
+                printf("%d\n", elt); 
+                MELT(ma, dim_pad, i, j) = elt;
+            }
+            else {
+                printf("0\n"); 
+                MELT(ma, dim_pad, i, j) = 0;
+            }
         }
 
     int32_t *mb = (int32_t *) malloc(sizeof(int32_t) * dim_pad * dim_pad);
     for (i = 0; i < dim_pad; i++)
         for (j = 0; j < dim_pad; j++) {
             if (i < dim && j < dim) {
-		(void) fscanf(fp, "%d", &elt); 
-		MELT(mb, dim_pad, i, j) = elt;
-	    }
-	    else
-		MELT(mb, dim_pad, i, j) = 0;
+                (void) fscanf(fp, "%d", &elt); 
+                printf("%d\n", elt);
+                MELT(mb, dim_pad, i, j) = elt;
+            }
+            else {
+                printf("0\n");
+                MELT(mb, dim_pad, i, j) = 0;
+            }
         }
 
     fclose(fp);
 
     int32_t *mc = (int32_t *) malloc(sizeof(int32_t) * dim_pad * dim_pad);
         
+    //square_matrix_multiply(mc,ma,mb,dim);
     strassen(mc, ma, mb, dim_pad);
 
     // print diagonal elements - does not read padding
     for (i = 0; i < dim; i++)
-        printf("%d\n", MELT(mc,dim,i,i));
+        printf("%d\n", MELT(mc,dim_pad,i,i));
 
     free(ma);
     free(mb);
