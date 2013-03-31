@@ -69,10 +69,10 @@ void ssub(int32_t *e, const int32_t *a, const int32_t *b, const int32_t *c, cons
 void strassen(int32_t *c, const int32_t *a, const int32_t *b, int32_t dim) {
     //if (dim <= CROSSOVER)
     if (dim <= crossover)
-	square_matrix_multiply(c, a, b, dim);
+        square_matrix_multiply(c, a, b, dim);
     else {
 	// cutting into submatrices
-	int32_t dim_half = dim >> 2;
+	int32_t dim_half = dim >> 1;
 
 	// sub-matrix size
 	int32_t subsize = dim_half * dim_half;
@@ -142,11 +142,6 @@ int main(int argc, char **argv) {
     
     assert(dim > 0);
 
-    if (flag == 1) {
-       printf("TEST");
-       exit(0);
-    }
-
     FILE *fp;
     fp = fopen(inputfile, "r");
     assert(fp != NULL);
@@ -200,12 +195,23 @@ int main(int argc, char **argv) {
     fclose(fp);
 
     int32_t *mc = (int32_t *) malloc(sizeof(int32_t) * dim_pad * dim_pad);
-        
+    
+    // track CPU time for the modified Strassen's
+    clock_t start = clock();
+    
     strassen(mc, ma, mb, dim_pad);
+    
+    int runtime = clock() - start;
 
     // print diagonal elements - does not read padding
     for (i = 0; i < dim; i++)
         printf("%d\n", MELT(mc,dim_pad,i,i));
+
+    // time in microseconds
+    if (flag == 1) {
+        int usec = (runtime * 1000000) / CLOCKS_PER_SEC;
+        printf("TIME (us) = %f\n", (float) usec);
+    }
 
     free(ma);
     free(mb);
