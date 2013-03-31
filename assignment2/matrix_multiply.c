@@ -7,6 +7,28 @@
 //#define CROSSOVER 10
 int32_t crossover;
 
+// we leave out dim and dim_orig to avoid repitition
+typedef struct {
+    int32_t *matrix;
+    int32_t row_off;
+    int32_t col_off;
+} matrix;
+
+// mrow_off = Matrix m row offset
+// mcol_off = Matrix m col offset
+void print_matrix(const matrix *m, int32_t mrow_off, int32_t mcol_off, 
+                  int32_t dim, int32_t dim_orig) {
+    int dim_row_off = mrow_off + dim;
+    int dim_col_off = mcol_off + dim;
+    for (int r = mrow_off; r < dim_row_off; r++) {
+        printf("| ");
+        for (int c = mcol_off; c < dim_col_off; ++c)
+            printf("%3d | ", MELT(m, dim_orig, r, c));
+        printf("\n");
+    }
+    printf("\n");
+}
+
 void square_matrix_multiply(int32_t *c, const int32_t *a, const int32_t *b, int32_t dim) {
     for (int32_t i = 0; i < dim; i++)
         for (int32_t j = 0; j < dim; j++)
@@ -23,16 +45,16 @@ void square_matrix_multiply(int32_t *c, const int32_t *a, const int32_t *b, int3
 //   Addition of square matrices (a + b = c)
 void madd(int32_t *c, const int32_t *a, const int32_t *b, int32_t dim) {
     for (int32_t i = 0; i < dim; i++)
-	for (int32_t j = 0; j < dim; j++)
-	    MELT(c, dim, i, j) = MELT(a, dim, i, j) + MELT(b, dim, i, j);
+        for (int32_t j = 0; j < dim; j++)
+            MELT(c, dim, i, j) = MELT(a, dim, i, j) + MELT(b, dim, i, j);
 }
 
 // msub(c, a, b, dim)
 //   Subtraction of square matrices (a - b = c)
 void msub(int32_t *c, const int32_t *a, const int32_t *b, int32_t dim) {
     for (int32_t i = 0; i < dim; i++)
-	for (int32_t j = 0; j < dim; j++)
-	    MELT(c, dim, i, j) = MELT(a, dim, i, j) - MELT(b, dim, i, j);
+        for (int32_t j = 0; j < dim; j++)
+            MELT(c, dim, i, j) = MELT(a, dim, i, j) - MELT(b, dim, i, j);
 }
 
 // sadd(e, a, b, c, d, dim)
@@ -42,7 +64,7 @@ void msub(int32_t *c, const int32_t *a, const int32_t *b, int32_t dim) {
 void sadd(int32_t *e, const int32_t *a, const int32_t *b, const int32_t *c, const int32_t *d, 
 	  int32_t dim) {
     for (int32_t i = 0; i < dim; i++)
-	for (int32_t j = 0; j < dim; j++)
+        for (int32_t j = 0; j < dim; j++)
 	    MELT(e, dim, i, j) = MELT(a, dim, i, j) + MELT(b, dim, i, j)
 		- MELT(c, dim, i, j) + MELT(d, dim, i, j);
 }
@@ -66,51 +88,61 @@ void ssub(int32_t *e, const int32_t *a, const int32_t *b, const int32_t *c, cons
 //   | A  B |  | E F |  =  | AE + BG  AF + BH | 
 //   | C  D |  | G H |     | CE + DG  CF + DH |
 //    -    -    -   -       -                -
-void strassen(int32_t *c, const int32_t *a, const int32_t *b, int32_t dim) {
-    //if (dim <= CROSSOVER)
+void strassen(int32_t *c, const int32_t *a, int32_t axoffset, int32_t ayoffset,
+              const int32_t *b, int32_t bxoffset, int32_t byoffset, int32_t dim) {
     if (dim <= crossover)
 	square_matrix_multiply(c, a, b, dim);
     else {
 	// cutting into submatrices
-	int32_t dim_half = dim >> 2;
+	int32_t dim_half = dim >> 1;
 
 	// sub-matrix size
 	int32_t subsize = dim_half * dim_half;
-
+        
 	// work matrix (for P1 through P7 - extra for work)
 	int32_t *p = (int32_t *) malloc(sizeof(int32_t) * subsize * 8);
 
+        print_matrix(a, 0, 0, dim_half, dim);
+        print_matrix(a, 0, dim_half, dim_half, dim);
+        print_matrix(a, dim_half, 0, dim_half, dim);
+        print_matrix(a, dim_half, dim_half, dim_half, dim);
+
+        print_matrix(b, 0, 0, dim_half, dim);
+        print_matrix(b, 0, dim_half, dim_half, dim);
+        print_matrix(b, dim_half, 0, dim_half, dim);
+        print_matrix(b, dim_half, dim_half, dim_half, dim);
+        
 	// First calculate P7, P6, & P5 due to double operations (double space)
 	// P7
 	msub(&p[0], &a[0], &a[2 * subsize], dim_half); // A - C
 	madd(&p[subsize], &b[0], &b[subsize], dim_half); // E + F
-	strassen(&p[6 * subsize], &p[0], &p[subsize], dim_half); // (A - C)(E + F)
-
+        //	strassen(&p[6 * subsize], &p[0], &p[subsize], dim_half); // (A - C)(E + F)
+        
 	// P6
 	msub(&p[0], &a[subsize], &a[3 * subsize], dim_half); // B - D
 	madd(&p[subsize], &b[2 * subsize], &b[3 * subsize], dim_half); // G + H
-	strassen(&p[5 * subsize], &p[0], &p[subsize], dim_half); // (B - D)(G + H)
+        //	strassen(&p[5 * subsize], &p[0], &p[subsize], dim_half); // (B - D)(G + H)
 
 	// P5
 	madd(&p[0], &a[0], &a[3 * subsize], dim_half); // A + D
 	madd(&p[subsize], &b[0], &b[3 * subsize], dim_half); // E + H
-	strassen(&p[4 * subsize], &p[0], &p[subsize], dim_half); // (A + D)(E + H)
+        //	strassen(&p[4 * subsize], &p[0], &p[subsize], dim_half); // (A + D)(E + H)
 	     
 	// P4
-	msub(&p[0], &b[3 * subsize], &b[0], dim_half); // G - E
-	strassen(&p[3 * subsize], &a[3 * subsize], &p[0], dim_half); // D(G - E)
+	msub(&p[0], &b[2 * subsize], &b[0], dim_half); // G - E
+        //	strassen(&p[3 * subsize], &a[3 * subsize], &p[0], dim_half); // D(G - E)
 
 	// P3
 	madd(&p[0], &a[2 * subsize], &a[3 * subsize], dim_half); // C + D
-	strassen(&p[2 * subsize], &p[0], &b[0], dim_half); // (C + D)E
+        //	strassen(&p[2 * subsize], &p[0], &b[0], dim_half); // (C + D)E
 
 	// P2
 	madd(&p[0], &a[0], &a[subsize], dim_half); // A + B
-	strassen(&p[subsize], &p[0], &b[3 * subsize], dim_half); // (A + B)H
+        //	strassen(&p[subsize], &p[0], &b[3 * subsize], dim_half); // (A + B)H
 	
 	// P1
 	msub(&p[7 * subsize], &b[subsize], &b[3 * subsize], dim_half); // F - H
-	strassen(&p[0], &a[0], &p[7 * subsize], dim_half); // A(F - H)
+        //	strassen(&p[0], &a[0], &p[7 * subsize], dim_half); // A(F - H)
 
 	// Calculate new matrix
 	sadd(&c[0], &p[4 * subsize], &p[3 * subsize], &p[subsize], 
@@ -158,6 +190,7 @@ int main(int argc, char **argv) {
     // if not a power of 2, pad appropriately
     //    padding done to reach crossover + 2^n
     int32_t dim_pad = dim;
+    //    int32_t dim_pad = (int32_t)ceil((double)dim / (double)crossover);
     if ((dim & (dim - 1)) != 0) {
 	// Bit Twiddling Hack for finding next highest power of 2
 	//   http://graphics.stanford.edu/~seander/bithacks.html
@@ -170,6 +203,8 @@ int main(int argc, char **argv) {
         dim_pad |= dim_pad >> 16;
         dim_pad++;
     }
+    //    dim_pad += dim;
+    printf("Dim Padded: %d\n", dim_pad);
 
     int32_t *ma = (int32_t *) malloc(sizeof(int32_t) * dim_pad * dim_pad);
     for (i = 0; i < dim_pad; i++)
@@ -201,11 +236,11 @@ int main(int argc, char **argv) {
 
     int32_t *mc = (int32_t *) malloc(sizeof(int32_t) * dim_pad * dim_pad);
         
-    strassen(mc, ma, mb, dim_pad);
+    strassen(mc, ma, 0, 0, mb, 0, 0, dim_pad);
 
     // print diagonal elements - does not read padding
     for (i = 0; i < dim; i++)
-        printf("%d\n", MELT(mc,dim_pad,i,i));
+        printf("%d\n", MELT(mc, dim_pad, i, i));
 
     free(ma);
     free(mb);
