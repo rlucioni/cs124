@@ -1,3 +1,6 @@
+// Renzo Lucioni (HUID: 90760092)
+// Matt Sheets (HUID: 50834689)
+
 #include "matrix_multiply.h"
 // accesses the element in "matrix" of dimension "dim" at "row" and "column"
 #define MELT(matrix, dim, row, col) (matrix)[(row) * (dim) + (col)]
@@ -156,7 +159,7 @@ int main(int argc, char **argv) {
     //    padding done to reach crossover + 2^n
     int32_t dim_pad = dim;
     if ((dim & (dim - 1)) != 0) {
-	// Bit Twiddling Hack for finding next power of 2
+	// Bit Twiddling Hack for finding next highest power of 2
 	//   http://graphics.stanford.edu/~seander/bithacks.html
 	//   -expects 32 bit architecture
         dim_pad--;
@@ -175,11 +178,9 @@ int main(int argc, char **argv) {
             // have the correct number of values (i.e., we don't check for EOF)
             if (i < dim && j < dim) {
                 (void) fscanf(fp, "%d", &elt);
-                printf("%d\n", elt); 
                 MELT(ma, dim_pad, i, j) = elt;
             }
             else {
-                printf("0\n"); 
                 MELT(ma, dim_pad, i, j) = 0;
             }
         }
@@ -189,11 +190,9 @@ int main(int argc, char **argv) {
         for (j = 0; j < dim_pad; j++) {
             if (i < dim && j < dim) {
                 (void) fscanf(fp, "%d", &elt); 
-                printf("%d\n", elt);
                 MELT(mb, dim_pad, i, j) = elt;
             }
             else {
-                printf("0\n");
                 MELT(mb, dim_pad, i, j) = 0;
             }
         }
@@ -202,7 +201,6 @@ int main(int argc, char **argv) {
 
     int32_t *mc = (int32_t *) malloc(sizeof(int32_t) * dim_pad * dim_pad);
         
-    //square_matrix_multiply(mc,ma,mb,dim);
     strassen(mc, ma, mb, dim_pad);
 
     // print diagonal elements - does not read padding
