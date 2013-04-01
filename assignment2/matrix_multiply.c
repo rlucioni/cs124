@@ -210,10 +210,10 @@ int main(int argc, char **argv) {
     // if not a power of 2, pad appropriately
     //    padding done to reach crossover + 2^n
     int32_t dim_pad = dim;
-    // int32_t dim_pad = (int32_t)ceil((double)dim / (double)crossover);
+    //    int32_t dim_pad = (int32_t)ceil((double)dim / (double)crossover);
     if ((dim & (dim - 1)) != 0) {
-	// Bit Twiddling Hack for finding next highest power of 2
-	//   http://graphics.stanford.edu/~seander/bithacks.html
+    // Bit Twiddling Hack for finding next highest power of 2
+    //   http://graphics.stanford.edu/~seander/bithacks.html
 	//   -expects 32 bit architecture
         dim_pad--;
         dim_pad |= dim_pad >> 1;
@@ -265,14 +265,15 @@ int main(int argc, char **argv) {
     
     int runtime = clock() - start;
 
-    // print diagonal elements - does not read padding
-    for (i = 0; i < dim; i++)
-        printf("%d\n", MELT(mc, i, i));
-
     // time in microseconds
     if (flag == 1) {
         int usec = (runtime * 1000000) / CLOCKS_PER_SEC;
-        printf("TIME (us) = %f\n", (float) usec);
+        printf("%d\n", usec);
+    }
+    else {
+        // print diagonal elements - does not read padding
+        for (i = 0; i < dim; i++)
+            printf("%d\n", MELT(mc, i, i));
     }
 
     free(ma.matrix);
