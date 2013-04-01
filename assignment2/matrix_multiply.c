@@ -2,83 +2,92 @@
 // Matt Sheets (HUID: 50834689)
 
 #include "matrix_multiply.h"
-// accesses the element in "matrix" of dimension "dim" at "row" and "column"
-#define MELT(matrix, dim, row, col) (matrix)[(row) * (dim) + (col)]
-//#define CROSSOVER 10
-int32_t crossover;
 
-// we leave out dim and dim_orig to avoid repitition
+// we leave out dim and dim_orig to avoid repitition (they're the same for all matrices in a
+//   function
 typedef struct {
     int32_t *matrix;
     int32_t row_off;
     int32_t col_off;
+    int32_t dim_real;
 } matrix;
+
+// accesses the element in "matrix" of dimension "dim" at "row" and "column"
+#define MELT(m, row, col) (m).matrix[((row) + (m).row_off) * (m).dim_real + ((col) + (m).col_off)]
+
+int32_t crossover;
+
 
 // mrow_off = Matrix m row offset
 // mcol_off = Matrix m col offset
-void print_matrix(const matrix *m, int32_t mrow_off, int32_t mcol_off, 
-                  int32_t dim, int32_t dim_orig) {
-    int dim_row_off = mrow_off + dim;
-    int dim_col_off = mcol_off + dim;
-    for (int r = mrow_off; r < dim_row_off; r++) {
+void print_matrix(const matrix m, int32_t dim) {
+    for (int r = 0; r < dim; r++) {
         printf("| ");
-        for (int c = mcol_off; c < dim_col_off; ++c)
-            printf("%3d | ", MELT(m, dim_orig, r, c));
+        for (int c = 0; c < dim; ++c)
+            printf("%3d | ", MELT(m, r, c));
         printf("\n");
     }
     printf("\n");
 }
 
-void square_matrix_multiply(int32_t *c, const int32_t *a, const int32_t *b, int32_t dim) {
+void square_matrix_multiply(matrix c, const matrix a, const matrix b, int32_t dim) {
     for (int32_t i = 0; i < dim; i++)
         for (int32_t j = 0; j < dim; j++)
-            MELT(c, dim, i, j) = 0;
+            MELT(c, i, j) = 0;
     for (int32_t i = 0; i < dim; i++)
         for (int32_t k = 0; k < dim; k++) {
-	    int32_t a_ik = MELT(a, dim, i, k);
+	    int32_t a_ik = MELT(a, i, k);
             for (int32_t j = 0; j < dim; j++)
-                MELT(c, dim, i, j) += a_ik * MELT(b, dim, k, j);
+                MELT(c, i, j) += a_ik * MELT(b, k, j);
 	}
 }
 
 // madd(c, a, b, dim)
 //   Addition of square matrices (a + b = c)
-void madd(int32_t *c, const int32_t *a, const int32_t *b, int32_t dim) {
+void madd(matrix c, const matrix a, const matrix b, int32_t dim) {
     for (int32_t i = 0; i < dim; i++)
         for (int32_t j = 0; j < dim; j++)
-            MELT(c, dim, i, j) = MELT(a, dim, i, j) + MELT(b, dim, i, j);
+            MELT(c, i, j) = MELT(a, i, j) + MELT(b, i, j);
 }
 
 // msub(c, a, b, dim)
 //   Subtraction of square matrices (a - b = c)
-void msub(int32_t *c, const int32_t *a, const int32_t *b, int32_t dim) {
+void msub(matrix c, const matrix a, const matrix b, int32_t dim) {
     for (int32_t i = 0; i < dim; i++)
         for (int32_t j = 0; j < dim; j++)
-            MELT(c, dim, i, j) = MELT(a, dim, i, j) - MELT(b, dim, i, j);
+            MELT(c, i, j) = MELT(a, i, j) - MELT(b, i, j);
 }
 
 // sadd(e, a, b, c, d, dim)
 //   Composition of several matrix operations for use by Strassen to avoid
 //   redundant loops (used for AE + BG in the Strassen Algorithm)
 // TODO: Inline to optimize away function call (since only used once)
-void sadd(int32_t *e, const int32_t *a, const int32_t *b, const int32_t *c, const int32_t *d, 
+void sadd(matrix e, const matrix a, const matrix b, const matrix c, const matrix d, 
 	  int32_t dim) {
     for (int32_t i = 0; i < dim; i++)
         for (int32_t j = 0; j < dim; j++)
-	    MELT(e, dim, i, j) = MELT(a, dim, i, j) + MELT(b, dim, i, j)
-		- MELT(c, dim, i, j) + MELT(d, dim, i, j);
+	    MELT(e, i, j) = MELT(a, i, j) + MELT(b, i, j)
+		- MELT(c, i, j) + MELT(d, i, j);
 }
 
 // ssub(e, a, b, c, d, dim)
 //   Composition of several matrix operations for use by Strassen to avoid
 //   redundant loops (used for CF + DH in the Strassen Algorithm)
 // TODO: Inline to optimize away function call (since only used once)
-void ssub(int32_t *e, const int32_t *a, const int32_t *b, const int32_t *c, const int32_t *d, 
+void ssub(matrix e, const matrix a, const matrix b, const matrix c, const matrix d, 
 	  int32_t dim) {
     for (int32_t i = 0; i < dim; i++)
 	for (int32_t j = 0; j < dim; j++)
-	    MELT(e, dim, i, j) = MELT(a, dim, i, j) + MELT(b, dim, i, j)
-		- MELT(c, dim, i, j) - MELT(d, dim, i, j);
+	    MELT(e, i, j) = MELT(a, i, j) + MELT(b, i, j)
+		- MELT(c, i, j) - MELT(d, i, j);
+}
+
+matrix init_matrix(matrix o, int32_t row_off, int32_t col_off) {
+    matrix n = {.matrix = o.matrix,
+                .row_off = row_off + o.row_off,
+                .col_off = col_off + o.col_off,
+                .dim_real = o.dim_real};
+    return n;
 }
 
 // strassen(c, a, b, dim)
@@ -88,69 +97,85 @@ void ssub(int32_t *e, const int32_t *a, const int32_t *b, const int32_t *c, cons
 //   | A  B |  | E F |  =  | AE + BG  AF + BH | 
 //   | C  D |  | G H |     | CE + DG  CF + DH |
 //    -    -    -   -       -                -
-void strassen(int32_t *c, const int32_t *a, int32_t axoffset, int32_t ayoffset,
-              const int32_t *b, int32_t bxoffset, int32_t byoffset, int32_t dim) {
+void strassen(matrix c, const matrix a, const matrix b, int32_t dim) {
     if (dim <= crossover)
-	square_matrix_multiply(c, a, b, dim);
+        square_matrix_multiply(c, a, b, dim);
     else {
 	// cutting into submatrices
 	int32_t dim_half = dim >> 1;
 
-	// sub-matrix size
-	int32_t subsize = dim_half * dim_half;
-        
+        matrix a1 = init_matrix(a, 0, 0);
+        matrix a2 = init_matrix(a, 0, dim_half);
+        matrix a3 = init_matrix(a, dim_half, 0);
+        matrix a4 = init_matrix(a, dim_half, dim_half);
+
+        matrix b1 = init_matrix(b, 0, 0);
+        matrix b2 = init_matrix(b, 0, dim_half);
+        matrix b3 = init_matrix(b, dim_half, 0);
+        matrix b4 = init_matrix(b, dim_half, dim_half);
+
+        matrix c1 = init_matrix(c, 0, 0);
+        matrix c2 = init_matrix(c, 0, dim_half);
+        matrix c3 = init_matrix(c, dim_half, 0);
+        matrix c4 = init_matrix(c, dim_half, dim_half);
+
 	// work matrix (for P1 through P7 - extra for work)
-	int32_t *p = (int32_t *) malloc(sizeof(int32_t) * subsize * 8);
+        int32_t subsize = dim_half * dim_half;
 
-        print_matrix(a, 0, 0, dim_half, dim);
-        print_matrix(a, 0, dim_half, dim_half, dim);
-        print_matrix(a, dim_half, 0, dim_half, dim);
-        print_matrix(a, dim_half, dim_half, dim_half, dim);
+        int32_t *p = (int32_t *) malloc(sizeof(int32_t) * subsize * 8);
 
-        print_matrix(b, 0, 0, dim_half, dim);
-        print_matrix(b, 0, dim_half, dim_half, dim);
-        print_matrix(b, dim_half, 0, dim_half, dim);
-        print_matrix(b, dim_half, dim_half, dim_half, dim);
-        
+        matrix p1 = {.matrix = (&p[0]), .row_off = 0, .col_off = 0, .dim_real = dim_half};
+        matrix p2 = {.matrix = (&p[subsize]), .row_off = 0, .col_off = 0, .dim_real = dim_half};
+        matrix p3 = {.matrix = (&p[2 * subsize]), .row_off = 0, .col_off = 0, 
+                     .dim_real = dim_half};
+        matrix p4 = {.matrix = (&p[3 * subsize]), .row_off = 0, .col_off = 0,
+                     .dim_real = dim_half};
+        matrix p5 = {.matrix = (&p[4 * subsize]), .row_off = 0, .col_off = 0,
+                     .dim_real = dim_half};
+        matrix p6 = {.matrix = (&p[5 * subsize]), .row_off = 0, .col_off = 0,
+                     .dim_real = dim_half};
+        matrix p7 = {.matrix = (&p[6 * subsize]), .row_off = 0, .col_off = 0,
+                     .dim_real = dim_half};
+        matrix p8 = {.matrix = (&p[7 * subsize]), .row_off = 0, .col_off = 0,
+                     .dim_real = dim_half};
+
 	// First calculate P7, P6, & P5 due to double operations (double space)
 	// P7
-	msub(&p[0], &a[0], &a[2 * subsize], dim_half); // A - C
-	madd(&p[subsize], &b[0], &b[subsize], dim_half); // E + F
-        //	strassen(&p[6 * subsize], &p[0], &p[subsize], dim_half); // (A - C)(E + F)
+	msub(p1, a1, a3, dim_half); // A - C
+	madd(p2, b1, b2, dim_half); // E + F
+        strassen(p7, p1, p2, dim_half); // (A - C)(E + F)
         
 	// P6
-	msub(&p[0], &a[subsize], &a[3 * subsize], dim_half); // B - D
-	madd(&p[subsize], &b[2 * subsize], &b[3 * subsize], dim_half); // G + H
-        //	strassen(&p[5 * subsize], &p[0], &p[subsize], dim_half); // (B - D)(G + H)
+	msub(p1, a2, a4, dim_half); // B - D
+	madd(p2, b3, b4, dim_half); // G + H
+        strassen(p6, p1, p2, dim_half); // (B - D)(G + H)
 
 	// P5
-	madd(&p[0], &a[0], &a[3 * subsize], dim_half); // A + D
-	madd(&p[subsize], &b[0], &b[3 * subsize], dim_half); // E + H
-        //	strassen(&p[4 * subsize], &p[0], &p[subsize], dim_half); // (A + D)(E + H)
+	madd(p1, a1, a4, dim_half); // A + D
+	madd(p2, b1, b4, dim_half); // E + H
+        strassen(p5, p1, p2, dim_half); // (A + D)(E + H)
 	     
 	// P4
-	msub(&p[0], &b[2 * subsize], &b[0], dim_half); // G - E
-        //	strassen(&p[3 * subsize], &a[3 * subsize], &p[0], dim_half); // D(G - E)
+	msub(p1, b3, b1, dim_half); // G - E
+        strassen(p4, a4, p1, dim_half); // D(G - E)
 
 	// P3
-	madd(&p[0], &a[2 * subsize], &a[3 * subsize], dim_half); // C + D
-        //	strassen(&p[2 * subsize], &p[0], &b[0], dim_half); // (C + D)E
+	madd(p1, a3, a4, dim_half); // C + D
+        strassen(p3, p1, b1, dim_half); // (C + D)E
 
 	// P2
-	madd(&p[0], &a[0], &a[subsize], dim_half); // A + B
-        //	strassen(&p[subsize], &p[0], &b[3 * subsize], dim_half); // (A + B)H
+	madd(p1, a1, a2, dim_half); // A + B
+        strassen(p2, p1, b4, dim_half); // (A + B)H
 	
 	// P1
-	msub(&p[7 * subsize], &b[subsize], &b[3 * subsize], dim_half); // F - H
-        //	strassen(&p[0], &a[0], &p[7 * subsize], dim_half); // A(F - H)
+	msub(p8, b2, b4, dim_half); // F - H
+        strassen(p1, a1, p8, dim_half); // A(F - H)
 
 	// Calculate new matrix
-	sadd(&c[0], &p[4 * subsize], &p[3 * subsize], &p[subsize], 
-	     &p[5 * subsize], dim_half); // AE + BG  (P5 + P4 - P2 + P6)
-	madd(&c[subsize], &p[0], &p[subsize], dim_half); // AF + BH  (P1 + P2)
-	madd(&c[2 * subsize], &p[2 * subsize], &p[3 * subsize], dim_half); // CE + DG  (P3 + P4)
-	ssub(&c[3 * subsize], &p[4 * subsize], &p[0], &p[2 * subsize], 
-	     &p[6 * subsize], dim_half); // CF + DH  (P5 + P1 - P3 + P7)
+	sadd(c1, p5, p4, p2, p6, dim_half); // AE + BG  (P5 + P4 - P2 + P6)
+	madd(c2, p1, p2, dim_half); // AF + BH  (P1 + P2)
+	madd(c3, p3, p4, dim_half); // CE + DG  (P3 + P4)
+	ssub(c4, p5, p1, p3, p7, dim_half); // CF + DH  (P5 + P1 - P3 + P7)
 
 	// deallocate work matrix
 	free(p);
@@ -204,45 +229,46 @@ int main(int argc, char **argv) {
         dim_pad++;
     }
     //    dim_pad += dim;
-    printf("Dim Padded: %d\n", dim_pad);
 
-    int32_t *ma = (int32_t *) malloc(sizeof(int32_t) * dim_pad * dim_pad);
+    matrix ma = {.matrix = (int32_t *) malloc(sizeof(int32_t) * dim_pad * dim_pad),
+                 .row_off = 0, .col_off = 0, .dim_real = dim_pad};
     for (i = 0; i < dim_pad; i++)
         for (j = 0; j < dim_pad; j++) {
             // As per Piazza question #217, we assume the files being passed 
             // have the correct number of values (i.e., we don't check for EOF)
             if (i < dim && j < dim) {
                 (void) fscanf(fp, "%d", &elt);
-                MELT(ma, dim_pad, i, j) = elt;
+                MELT(ma, i, j) = elt;
             }
             else {
-                MELT(ma, dim_pad, i, j) = 0;
+                MELT(ma, i, j) = 0;
             }
         }
 
-    int32_t *mb = (int32_t *) malloc(sizeof(int32_t) * dim_pad * dim_pad);
+    matrix mb = {.matrix = (int32_t *) malloc(sizeof(int32_t) * dim_pad * dim_pad),
+                 .row_off = 0, .col_off = 0, .dim_real = dim_pad};
     for (i = 0; i < dim_pad; i++)
         for (j = 0; j < dim_pad; j++) {
             if (i < dim && j < dim) {
                 (void) fscanf(fp, "%d", &elt); 
-                MELT(mb, dim_pad, i, j) = elt;
+                MELT(mb, i, j) = elt;
             }
             else {
-                MELT(mb, dim_pad, i, j) = 0;
+                MELT(mb,i, j) = 0;
             }
         }
 
     fclose(fp);
 
-    int32_t *mc = (int32_t *) malloc(sizeof(int32_t) * dim_pad * dim_pad);
-        
-    strassen(mc, ma, 0, 0, mb, 0, 0, dim_pad);
+    matrix mc = {.matrix = (int32_t *) malloc(sizeof(int32_t) * dim_pad * dim_pad),
+                 .row_off = 0, .col_off = 0, .dim_real = dim_pad};
+    strassen(mc, ma, mb, dim_pad);
 
     // print diagonal elements - does not read padding
     for (i = 0; i < dim; i++)
-        printf("%d\n", MELT(mc, dim_pad, i, i));
+        printf("%d\n", MELT(mc, i, i));
 
-    free(ma);
-    free(mb);
-    free(mc);
+    free(ma.matrix);
+    free(mb.matrix);
+    free(mc.matrix);
 }
