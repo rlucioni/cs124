@@ -10,9 +10,9 @@
 //   function - struct
 typedef struct {
     int32_t *matrix;
-    int32_t row_off;
-    int32_t col_off;
-    int32_t dim_real;
+    size_t row_off;
+    size_t col_off;
+    size_t dim_real;
 } matrix;
 
 // accesses the element in "matrix" of dimension "dim" at "row" and "column"
@@ -22,41 +22,41 @@ typedef struct {
 
 // mrow_off = Matrix m row offset
 // mcol_off = Matrix m col offset
-void print_matrix(const matrix m, int32_t dim) {
-    for (int r = 0; r < dim; r++) {
+void print_matrix(const matrix m, size_t dim) {
+    for (size_t i = 0; i < dim; i++) {
         printf("| ");
-        for (int c = 0; c < dim; ++c)
-            printf("%3d | ", MELT(m, r, c));
+        for (size_t j = 0; j < dim; j++)
+            printf("%3d | ", MELT(m, i, j));
         printf("\n");
     }
     printf("\n");
 }
 
-void square_matrix_multiply(matrix c, const matrix a, const matrix b, int32_t dim) {
-    for (int32_t i = 0; i < dim; i++)
-        for (int32_t j = 0; j < dim; j++)
+void square_matrix_multiply(matrix c, const matrix a, const matrix b, size_t dim) {
+    for (size_t i = 0; i < dim; i++)
+        for (size_t j = 0; j < dim; j++)
             MELT(c, i, j) = 0;
-    for (int32_t i = 0; i < dim; i++)
-        for (int32_t k = 0; k < dim; k++) {
+    for (size_t i = 0; i < dim; i++)
+        for (size_t k = 0; k < dim; k++) {
             int32_t a_ik = MELT(a, i, k);
-            for (int32_t j = 0; j < dim; j++)
+            for (size_t j = 0; j < dim; j++)
                 MELT(c, i, j) += a_ik * MELT(b, k, j);
         }
 }
 
 // madd(c, a, b, dim)
 //   Addition of square matrices (a + b = c)
-void madd(matrix c, const matrix a, const matrix b, int32_t dim) {
-    for (int32_t i = 0; i < dim; i++)
-        for (int32_t j = 0; j < dim; j++)
+void madd(matrix c, const matrix a, const matrix b, size_t dim) {
+    for (size_t i = 0; i < dim; i++)
+        for (size_t j = 0; j < dim; j++)
             MELT(c, i, j) = MELT(a, i, j) + MELT(b, i, j);
 }
 
 // msub(c, a, b, dim)
 //   Subtraction of square matrices (a - b = c)
-void msub(matrix c, const matrix a, const matrix b, int32_t dim) {
-    for (int32_t i = 0; i < dim; i++)
-        for (int32_t j = 0; j < dim; j++)
+void msub(matrix c, const matrix a, const matrix b, size_t dim) {
+    for (size_t i = 0; i < dim; i++)
+        for (size_t j = 0; j < dim; j++)
             MELT(c, i, j) = MELT(a, i, j) - MELT(b, i, j);
 }
 
@@ -65,9 +65,9 @@ void msub(matrix c, const matrix a, const matrix b, int32_t dim) {
 //   redundant loops (used for AE + BG in the Strassen Algorithm)
 // TODO: Inline to optimize away function call (since only used once)
 void sadd(matrix e, const matrix a, const matrix b, const matrix c, const matrix d, 
-      int32_t dim) {
-    for (int32_t i = 0; i < dim; i++)
-        for (int32_t j = 0; j < dim; j++)
+      size_t dim) {
+    for (size_t i = 0; i < dim; i++)
+        for (size_t j = 0; j < dim; j++)
             MELT(e, i, j) = MELT(a, i, j) + MELT(b, i, j)
             - MELT(c, i, j) + MELT(d, i, j);
 }
@@ -77,14 +77,14 @@ void sadd(matrix e, const matrix a, const matrix b, const matrix c, const matrix
 //   redundant loops (used for CF + DH in the Strassen Algorithm)
 // TODO: Inline to optimize away function call (since only used once)
 void ssub(matrix e, const matrix a, const matrix b, const matrix c, const matrix d, 
-      int32_t dim) {
-    for (int32_t i = 0; i < dim; i++)
-        for (int32_t j = 0; j < dim; j++)
+      size_t dim) {
+    for (size_t i = 0; i < dim; i++)
+        for (size_t j = 0; j < dim; j++)
             MELT(e, i, j) = MELT(a, i, j) + MELT(b, i, j)
             - MELT(c, i, j) - MELT(d, i, j);
 }
 
-matrix init_matrix(matrix o, int32_t row_off, int32_t col_off) {
+matrix init_matrix(matrix o, size_t row_off, size_t col_off) {
     matrix n = {.matrix = o.matrix,
                 .row_off = row_off + o.row_off,
                 .col_off = col_off + o.col_off,
@@ -99,13 +99,13 @@ matrix init_matrix(matrix o, int32_t row_off, int32_t col_off) {
 //   | A  B |  | E F |  =  | AE + BG  AF + BH | 
 //   | C  D |  | G H |     | CE + DG  CF + DH |
 //    -    -    -   -       -                -
-void strassen(matrix c, const matrix a, const matrix b, int32_t dim) {
+void strassen(matrix c, const matrix a, const matrix b, size_t dim) {
     //if (dim <= crossover)
     if (dim <= CROSSOVER)
         square_matrix_multiply(c, a, b, dim);
     else {
         // cutting into submatrices
-        int32_t dim_half = dim >> 1;
+        size_t dim_half = dim >> 1;
 
         matrix a1 = init_matrix(a, 0, 0);
         matrix a2 = init_matrix(a, 0, dim_half);
@@ -123,7 +123,7 @@ void strassen(matrix c, const matrix a, const matrix b, int32_t dim) {
         matrix c4 = init_matrix(c, dim_half, dim_half);
 
         // work matrix (for P1 through P7 - extra for work)
-        int32_t subsize = dim_half * dim_half;
+        size_t subsize = dim_half * dim_half;
 
         int32_t *p = (int32_t *) malloc(sizeof(int32_t) * subsize * 8);
 
@@ -197,8 +197,8 @@ int main(int argc, char **argv) {
         exit(1);
     }*/
 
-    int32_t flag = atoi(argv[1]);
-    int32_t dim = atoi(argv[2]);
+    int flag = atoi(argv[1]);
+    size_t dim = atoi(argv[2]);
     char* inputfile = argv[3];
     //crossover = atoi(argv[4]);
     
@@ -209,12 +209,12 @@ int main(int argc, char **argv) {
     assert(fp != NULL);
 
     int32_t elt;
-    int32_t i;
-    int32_t j;
+    size_t i;
+    size_t j;
 
     // if not a power of 2, pad appropriately
     //    padding done to reach crossover + 2^n
-    int32_t dim_pad = dim;
+    size_t dim_pad = dim;
     //    int32_t dim_pad = (int32_t)ceil((double)dim / (double)crossover);
     if ((dim & (dim - 1)) != 0) {
     // Bit Twiddling Hack for finding next highest power of 2
