@@ -52,9 +52,8 @@ plt.title('Crossover vs. Time to Compute AB = C, n = 500') # note that this is f
 plt.xlabel('Crossover')
 plt.ylabel('Compute Time (seconds)')
 plt.axis([xmin,xmax,ymin,ymax])
-plt.xticks(range(xmin,xmax,xint))
 
 # save figure as a pdf
-savefig('crossover-v-compute-time-500.pdf')
+savefig('POOP-crossover-v-compute-time-500.pdf')
 #savefig('cutoff-v-compute-time-1000.pdf')
 #savefig('cutoff-v-compute-time-2500.pdf')

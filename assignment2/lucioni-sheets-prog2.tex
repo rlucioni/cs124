@@ -28,12 +28,11 @@ We can analytically determine the value of $n_0$ that optimizes the running time
 
 \hspace{4mm}We first implemented both the conventional algorithm for matrix multiplication. We then implemented Strassen's algorithm for matrices where $n$ is a power of 2. We extended this implementation for more general values of $n$ by padding with 0's, as suggested in the hints section of the spec. We tied the two algorithms together by adding a conditional to our implementation of Strassen's to check if the current dimension was less than or equal to the cutoff value; if so, we switch to running our implementation of the conventional algorithm from within Strassen's algorithm. 
 
-We tested for the optimal value of $n_0$ by running our modified version of Strassen's algorithm on matrices where $n=500$, $n=1000$, and $n=2500$. In each of these matrices, every element was randomly selected to be 0, 1, or 2. The graphs below show our results. In each, the compute time is averaged over three runs.
+We tested for the optimal value of $n_0$ by running our modified version of Strassen's algorithm on matrices where $n=500$ and $n=1000$. In both of these matrices, every element was randomly selected to be 0, 1, or 2. The graphs below show our results. In each, the compute time is averaged over six runs.
 
 \begin{center}
 \includegraphics[scale=0.8]{crossover-v-compute-time-500.pdf}
-%\includegraphics[scale=0.8]{cutoff-v-compute-time-1000.pdf}
-%\includegraphics[scale=0.8]{cutoff-v-compute-time-2500.pdf}
+\includegraphics[scale=0.8]{crossover-v-compute-time-1000.pdf}
 \end{center}
 
 Notice the stepped pattern in the graph; each step occurs at a power at 2.
