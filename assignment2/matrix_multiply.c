@@ -265,14 +265,15 @@ int main(int argc, char **argv) {
     
     int runtime = clock() - start;
 
-    // print diagonal elements - does not read padding
-    for (i = 0; i < dim; i++)
-        printf("%d\n", MELT(mc, i, i));
-
     // time in microseconds
     if (flag == 1) {
         int usec = (runtime * 1000000) / CLOCKS_PER_SEC;
-        printf("TIME (us) = %f\n", (float) usec);
+        printf("%d\n", usec);
+    }
+    else {
+        // print diagonal elements - does not read padding
+        for (i = 0; i < dim; i++)
+            printf("%d\n", MELT(mc, i, i));
     }
 
     free(ma.matrix);
