@@ -209,11 +209,11 @@ int main(int argc, char **argv) {
 
     // if not a power of 2, pad appropriately
     //    padding done to reach crossover + 2^n
-    // int32_t dim_pad = dim;
-    int32_t dim_pad = (int32_t)ceil((double)dim / (double)crossover);
+    int32_t dim_pad = dim;
+    //    int32_t dim_pad = (int32_t)ceil((double)dim / (double)crossover);
     if ((dim & (dim - 1)) != 0) {
-	// Bit Twiddling Hack for finding next highest power of 2
-	//   http://graphics.stanford.edu/~seander/bithacks.html
+    // Bit Twiddling Hack for finding next highest power of 2
+    //   http://graphics.stanford.edu/~seander/bithacks.html
 	//   -expects 32 bit architecture
         dim_pad--;
         dim_pad |= dim_pad >> 1;
@@ -223,7 +223,7 @@ int main(int argc, char **argv) {
         dim_pad |= dim_pad >> 16;
         dim_pad++;
     }
-    dim_pad += dim;
+    //    dim_pad += dim;
 
     matrix ma = {.matrix = (int32_t *) malloc(sizeof(int32_t) * dim_pad * dim_pad),
                  .row_off = 0, .col_off = 0, .dim_real = dim_pad};

@@ -31,10 +31,12 @@ We can analytically determine the value of $n_0$ that optimizes the running time
 We tested for the optimal value of $n_0$ by running our modified version of Strassen's algorithm on matrices where $n=500$, $n=1000$, and $n=2500$. In each of these matrices, every element was randomly selected to be 0, 1, or 2. The graphs below show our results. In each, the compute time is averaged over three runs.
 
 \begin{center}
-\includegraphics[scale=0.8]{cutoff-v-compute-time-500.pdf}
-\includegraphics[scale=0.8]{cutoff-v-compute-time-1000.pdf}
-\includegraphics[scale=0.8]{cutoff-v-compute-time-2500.pdf}
+\includegraphics[scale=0.8]{crossover-v-compute-time-500.pdf}
+%\includegraphics[scale=0.8]{cutoff-v-compute-time-1000.pdf}
+%\includegraphics[scale=0.8]{cutoff-v-compute-time-2500.pdf}
 \end{center}
+
+Notice the stepped pattern in the graph; each step occurs at a power at 2.
 
 \section*{Discussion}
 
