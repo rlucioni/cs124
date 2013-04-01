@@ -1,5 +1,5 @@
 CC = gcc
-CFLAGS = -std=c99 -pg -Wall -Werror -O2
+CFLAGS = -std=c99 -g -Wall -Werror -O2
 
 default: strassen
 
