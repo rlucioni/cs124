@@ -43,7 +43,7 @@ plt.title('Crossover vs. Time to Compute AB = C, n = 500') # note that this is f
 plt.xlabel('Crossover')
 #plt.ylabel('Compute Time (us)')
 plt.ylabel('Compute Time (ms)')
-plt.axis([0,500,140,230])
+plt.axis([0,500,140,240])
 #plt.axis([0,1000,1000000,2000000])
 #plt.axis([0,2500,1000000,2000000])
 #plt.figlegend((p1,p2,p3), ('n = 500','n = 1000','n = 2500'), 'right')
