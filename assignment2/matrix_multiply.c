@@ -199,11 +199,6 @@ int main(int argc, char **argv) {
     
     assert(dim > 0);
 
-    if (flag == 1) {
-       printf("TEST");
-       exit(0);
-    }
-
     FILE *fp;
     fp = fopen(inputfile, "r");
     assert(fp != NULL);
@@ -262,11 +257,23 @@ int main(int argc, char **argv) {
 
     matrix mc = {.matrix = (int32_t *) malloc(sizeof(int32_t) * dim_pad * dim_pad),
                  .row_off = 0, .col_off = 0, .dim_real = dim_pad};
+    
+    // track CPU time for the modified Strassen's
+    clock_t start = clock();
+    
     strassen(mc, ma, mb, dim_pad);
+    
+    int runtime = clock() - start;
 
     // print diagonal elements - does not read padding
     for (i = 0; i < dim; i++)
         printf("%d\n", MELT(mc, i, i));
+
+    // time in microseconds
+    if (flag == 1) {
+        int usec = (runtime * 1000000) / CLOCKS_PER_SEC;
+        printf("TIME (us) = %f\n", (float) usec);
+    }
 
     free(ma.matrix);
     free(mb.matrix);
