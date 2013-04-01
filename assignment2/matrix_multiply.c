@@ -3,6 +3,9 @@
 
 #include "matrix_multiply.h"
 
+// used for averaging results when flag is 1
+#define NUMTRIALS 30
+
 // Determined experimentally, as described in the writeup
 //#define CROSSOVER 32
 
@@ -226,6 +229,9 @@ int main(int argc, char **argv) {
         dim_pad |= dim_pad >> 4;
         dim_pad |= dim_pad >> 8;
         dim_pad |= dim_pad >> 16;
+        // handle 64 bit
+        if (sizeof(size_t) == 8)
+            dim_pad |= dim_pad >> 32;
         dim_pad++;
     }
     // dim_pad += dim;
@@ -262,18 +268,25 @@ int main(int argc, char **argv) {
 
     matrix mc = {.matrix = (int32_t *) malloc(sizeof(int32_t) * dim_pad * dim_pad),
                  .row_off = 0, .col_off = 0, .dim_real = dim_pad};
-    
+
+    int numtrials = 1;
+    if (flag == 1)
+        numtrials = NUMTRIALS;
+
     // track CPU time for the modified Strassen's
-    clock_t start = clock();    
-    strassen(mc, ma, mb, dim_pad);
-    int runtime = clock() - start;
+    int time_total = 0;
+    for (int i = 0; i < numtrials; ++i) {
+        clock_t start = clock();    
+        strassen(mc, ma, mb, dim_pad);
+        time_total += clock() - start;
+    }
 
     // use flag 1 to get time in microseconds/milliseconds
     if (flag == 1) {
         //int usec = (runtime * 1000000) / CLOCKS_PER_SEC;
-        int msec = (runtime * 1000) / CLOCKS_PER_SEC;
+        int msec = (time_total * 1000) / CLOCKS_PER_SEC;
         //printf("%d\n", usec);
-        printf("%d\n", msec);
+        printf("%.2f\n", (float)msec / numtrials);
     }
     // use flag 0 (or other flags) to get diagonal elements
     else {
@@ -285,4 +298,5 @@ int main(int argc, char **argv) {
     free(ma.matrix);
     free(mb.matrix);
     free(mc.matrix);
+    return 0;
 }
