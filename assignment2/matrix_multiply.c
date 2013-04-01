@@ -4,7 +4,7 @@
 #include "matrix_multiply.h"
 
 // Determined experimentally, as described in the writeup
-#define CROSSOVER 32
+//#define CROSSOVER 32
 
 // we leave out dim and dim_orig to avoid repitition (they're the same for all matrices in a
 //   function - struct
@@ -18,7 +18,7 @@ typedef struct {
 // accesses the element in "matrix" of dimension "dim" at "row" and "column"
 #define MELT(m, row, col) (m).matrix[((row) + (m).row_off) * (m).dim_real + ((col) + (m).col_off)]
 
-//int32_t crossover;
+int32_t crossover;
 
 // mrow_off = Matrix m row offset
 // mcol_off = Matrix m col offset
@@ -100,8 +100,8 @@ matrix init_matrix(matrix o, int32_t row_off, int32_t col_off) {
 //   | C  D |  | G H |     | CE + DG  CF + DH |
 //    -    -    -   -       -                -
 void strassen(matrix c, const matrix a, const matrix b, int32_t dim) {
-    //if (dim <= crossover)
-    if (dim <= CROSSOVER)
+    if (dim <= crossover)
+    //if (dim <= CROSSOVER)
         square_matrix_multiply(c, a, b, dim);
     else {
         // cutting into submatrices
@@ -187,20 +187,20 @@ void strassen(matrix c, const matrix a, const matrix b, int32_t dim) {
 
 int main(int argc, char **argv) {
     // process command line arguments
-    if (argc != 4) {
+    /*if (argc != 4) {
         fprintf(stderr, "usage: %s flag dimension inputfile\n", argv[0]);
         exit(1);
-    }
+    }*/
     
-    /*if (argc != 5) {
+    if (argc != 5) {
         fprintf(stderr, "usage: %s flag dimension inputfile crossover\n", argv[0]);
         exit(1);
-    }*/
+    }
 
     int32_t flag = atoi(argv[1]);
     int32_t dim = atoi(argv[2]);
     char* inputfile = argv[3];
-    //crossover = atoi(argv[4]);
+    crossover = atoi(argv[4]);
     
     assert(dim > 0);
 
@@ -268,10 +268,12 @@ int main(int argc, char **argv) {
     strassen(mc, ma, mb, dim_pad);
     int runtime = clock() - start;
 
-    // use flag 1 to get time in microseconds
+    // use flag 1 to get time in microseconds/milliseconds
     if (flag == 1) {
-        int usec = (runtime * 1000000) / CLOCKS_PER_SEC;
-        printf("%d\n", usec);
+        //int usec = (runtime * 1000000) / CLOCKS_PER_SEC;
+        int msec = (runtime * 1000) / CLOCKS_PER_SEC;
+        //printf("%d\n", usec);
+        printf("%d\n", msec);
     }
     // use flag 0 (or other flags) to get diagonal elements
     else {
