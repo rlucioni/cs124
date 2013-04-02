@@ -19,24 +19,26 @@ except Exception:
 xmin = int(sys.argv[1])
 xmax = int(sys.argv[2])
 xint = int(sys.argv[3])
-xs = range(xmin, xmax, xint)
+xs = range(xmin, xmax + 1, xint)
 
 ### Y Axis ###
 i = 1
-ymini = 1
-ymin = None
-ymax = None
+ymin, ymini = None, 1
+ymax, ymaxi = None, 1
 ys = []
 for line in inputFile:
     line = line.strip()
-    i = i + 1
-    y = float(line)
-    if ymin is None or y < ymin:
-        ymin = y
-        ymini = i
-    if ymax is None or y > ymax:
-        ymax = y
-    ys.append(y)
+    try:
+        float(line)
+        y = float(line)
+        if ymin is None or y < ymin:
+            ymin, ymini = y, i
+        if ymax is None or y > ymax:
+            ymax, ymaxi = y, i
+        ys.append(y)
+    except ValueError:
+        print "Could Not Convert \"%s\" to float" % line
+    i += 1
 inputFile.close
 
 p1, = plt.plot(xs, ys, color='b')
@@ -47,9 +49,9 @@ plt.title('Crossover vs. Time to Compute AB = C, n = 500') # note that this is f
 
 plt.xlabel('Crossover')
 plt.ylabel('Compute Time (seconds)')
-plt.axis([xmin,xmax,ymin,ymax])
-print ymin
-print ymini
+plt.axis([xmin,xmax,ymin,125])
+print "MIN: (%d, %.2f)" % (ymini, ymin)
+print "MAX: (%d, %.2f)" % (ymaxi, ymax)
 
 # save figure as a pdf
 savefig('uber-crossover-v-compute-time-500.pdf')
