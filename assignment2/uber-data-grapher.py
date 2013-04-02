@@ -5,8 +5,8 @@ from pylab import *
 plt.clf()
 
 # xs and ys must have the same dimension!!
-if len(sys.argv) != 6:
-    print 'usage : ' + __file__ + ' x-min x-max x-interval data-file iters-per-x'
+if len(sys.argv) != 5:
+    print 'usage : ' + __file__ + ' x-min x-max x-interval data-file'
     sys.exit(1)
 
 try:
@@ -22,23 +22,21 @@ xint = int(sys.argv[3])
 xs = range(xmin, xmax, xint)
 
 ### Y Axis ###
-iters_per_x = int(sys.argv[5])
+i = 1
+ymini = 1
 ymin = None
 ymax = None
 ys = []
-runner = 0
-num_iters = 0
 for line in inputFile:
-    runner += int(line)
-    num_iters += 1
-    if num_iters == iters_per_x:
-        avg = runner / iters_per_x
-        num_iters = 0
-        if ymin is None or avg < ymin:
-            ymin = avg
-        if ymax is None or avg > ymax:
-            ymax = avg
-            ys.append(avg)
+    line = line.strip()
+    i = i + 1
+    y = float(line)
+    if ymin is None or y < ymin:
+        ymin = y
+        ymini = i
+    if ymax is None or y > ymax:
+        ymax = y
+    ys.append(y)
 inputFile.close
 
 p1, = plt.plot(xs, ys, color='b')
@@ -46,14 +44,12 @@ p1, = plt.plot(xs, ys, color='b')
 plt.grid(b=1)
 
 plt.title('Crossover vs. Time to Compute AB = C, n = 500') # note that this is for 012 matrices
-#plt.title('Crossover vs. Time to Compute AB = C, n = 1000') # note that this is for 012 matrices
-#plt.title('Crossover vs. Time to Compute AB = C, n = 2500') # note that this is for 012 matrices
 
 plt.xlabel('Crossover')
 plt.ylabel('Compute Time (seconds)')
 plt.axis([xmin,xmax,ymin,ymax])
+print ymin
+print ymini
 
 # save figure as a pdf
-savefig('POOP-crossover-v-compute-time-500.pdf')
-#savefig('cutoff-v-compute-time-1000.pdf')
-#savefig('cutoff-v-compute-time-2500.pdf')
+savefig('uber-crossover-v-compute-time-500.pdf')
