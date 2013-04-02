@@ -245,6 +245,9 @@ int main(int argc, char **argv) {
             }
         }
 
+    // for large matrices
+    rewind(fp);
+
     matrix mb = {.matrix = (int32_t *) malloc(sizeof(int32_t) * dim_pad * dim_pad),
                  .row_off = 0, .col_off = 0, .dim_real = dim_pad};
     for (i = 0; i < dim_pad; i++)
