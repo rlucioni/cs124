@@ -26,7 +26,7 @@ T(n) &=& 7T(\frac{n}{2}) + \frac{9}{2}n^2\\
 \end{array}
 \]
 
-We can then compare this to the conventional method and determine at which point switching to Strassen's begins to benefit the running time, since the above recurrence is the recurrence containing one call to Strassen's. We set $\frac{7n^3}{2} - \frac{11n^2}{2}$ equal to $2n^3 - n^2$ and achieve an intersection at 15. Thus, Strassen's becomes effective when $n = 15$. When $n=15$ with one call to Strassen's, the crossover point is 7.5. However, because it does not make sense to crossover at 7.5, we round the crossover point up to 8. If we had rounded down to 7 then Strassen's should have become effective at $n = 14$. Alternatively, one can see that rounding up makes sense by realizing that Strassen's is the same as the conventional method at $n=15$ and only becomes better at $n = 16$. Thus, we have analytically that the crossover should be 8; that is, $n_0 = 8$.
+We can then compare this to the conventional method and determine at which point switching to Strassen's begins to benefit the running time, since the above recurrence is the recurrence containing one call to Strassen's. We set $\frac{7n^3}{2} - \frac{11n^2}{2}$ equal to $2n^3 - n^2$ and achieve an intersection at 15. Thus, Strassen's becomes effective when $n = 15$. When $n=15$ with one call to Strassen's, the crossover point is 7.5. However, because it does not make sense to crossover at 7.5, we round the crossover point up to 8. If we had rounded down to 7 then Strassen's should have become effective at $n = 14$. Thus, we have analytically determined that the crossover should be 8; that is, $n_0 = 8$.
 
 \section*{Experimental Approach}
 
@@ -49,7 +49,7 @@ Each step indicates the time (in milliseconds) required to multiply two matrices
 \hspace{4mm} The lowest crossover point we could decide on was $n_0 = 64$, as discussed above. While all arithmetic operations are assumed to be cost 1 in the analytical approximation of the crossover point, in reality these operations have distinct values. Furthermore, some operations were assumed to be free in the analytical approach, explaining the discrepancy between the analytically and experimentally determined crossover values.
 
 \subsection*{Difficulties}
-\hspace{4mm} Several difficulties arose when implementing Strassen's.
+\hspace{4mm} Several difficulties arose when implementing Strassen's. The most pressing of these challenges was how to properly utilize and re-use memory, however, this is an optimization issue and so we will leave discussion of this topic to that section. We did struggle to some degree finding out how to properly index into our original matrices in order to work in place, however, via classic debugging techniques like print statements, we were bale to solve our problems.
 
 \subsection*{Optimization}
 \hspace{4mm} We optimized our implementation of the conventional algorithm by taking locality of reference into consideration in our three {\tt for} loops.
@@ -61,7 +61,7 @@ In addition, we optimized the calculation of AE + BG and CF + DH in Strassen's b
 Finally, we optimized the calculation of the necessary padding using a bit manipulation technique described here: http://graphics.stanford.edu/~seander/bithacks.html. We added a conditional to this technique to allow the code to work on both 32 and 64-bit architectures (assuming it is compiled on each architecture separately).
 
 \subsection*{Timing}
-We defined the runtime of our implementation of the modified Strassen's algorithm as the number of clock cycles elapsed while the multiplication algorithm was running on the CPU. That is, we used CPU time as our definition of time. Note that this does not include the time required to pad matrices, if necessary, or print the diagonal elements of the final matrix. Although important to the total runtime of our program, these steps do not figure into finding the optimal crossover point because they are not part of then matrix multiplication step.
+\hspace{4mm} We defined the runtime of our implementation of the modified Strassen's algorithm as the number of clock cycles elapsed while the multiplication algorithm was running on the CPU. That is, we used CPU time as our definition of time. Note that this does not include the time required to pad matrices, if necessary, or print the diagonal elements of the final matrix. Although important to the total runtime of our program, these steps do not figure into finding the optimal crossover point because they are not part of then matrix multiplication step.
 
 \subsection*{Largest $n$}
 \hspace{4mm} The largest value of $n$ we tested our program on was $n = 10000$; we were able to successfully multiply these matrices.
