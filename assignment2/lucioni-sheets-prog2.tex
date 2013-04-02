@@ -13,36 +13,26 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section*{Analytical Approach}
 
-\hspace{4mm} The conventional algorithm requires $n^3$ multiplications and $n^2(n-1)$ additions. Thus, the work required by the conventional algorithm, used when $n \leq n_0$, is $n^3 + n^2(n-1) = 2n^3 - n^2$. Strassen's algorithm requires 7 matrix products per recurrence, 10 additions and subtractions when deriving the $P_1, \ldots, P_7$, and 8 additions and subtractions when manipulating the $P_i$'s to find the matrix sums. The work required by Strassen's algorithm, used when $n > n_0$, can be represented by the recurrence $T(n) = 7T(\frac{n}{2}) + (10+8)\frac{n^2}{4} = 7T(\frac{n}{2}) + \frac{9}{2}n^2$, where $T(1) = 1$. Using Mathematica, we find that the solution to this recurrence with the given initial condition is $T(n) = 7^{(\log_2 n) + 1}-6 n^2$. We then simplify this function (so that it clearly agrees with the Big-O running-time for Strassen's of $O(n^{\log_2 7})$) as follows:
+\hspace{4mm} The conventional algorithm requires $n^3$ multiplications and $n^2(n-1)$ additions. Thus, the work required by the conventional algorithm, used when $n \leq n_0$, is $n^3 + n^2(n-1) = 2n^3 - n^2$. Strassen's algorithm requires 7 matrix products per recurrence, 10 additions and subtractions when deriving the $P_1, \ldots, P_7$, and 8 additions and subtractions when manipulating the $P_i$'s to find the matrix sums. The work required by Strassen's algorithm, used when $n > n_0$, can be represented by the recurrence $T(n) = 7T(\frac{n}{2}) + (10+8)\frac{n^2}{4} = 7T(\frac{n}{2}) + \frac{9}{2}n^2$, where $T(1) = 1$.
+
+To determine the ideal crossover point analytically we find the location at which changing to Strassen's first starts to provide a benefit in runtime (i.e. the first point at which T(n) for Strassen's is less than T(n) for the conventional method). In order to find this location we define a recurrence for Strassen's featuring the crossover as follows:
 \[
 \begin{array}{rcl}
-T(n) &=& 7^{\log_2 n + 1} - 6n^2\\
-&=& 7 \cdot 7^{\log_2 n} - 6n^2\\
-&=& 7 \cdot 7^{\frac{\log_7 n}{\log_7 2}} - 6n^2\\
-&=& 7 \cdot 7^{\frac{1}{\log_7 2} \cdot \log_7 n} - 6n^2\\
-&=& 7 \cdot 7^{\cdot \log_7 n^{\frac{1}{\log_7 2}}} - 6n^2\\
-&=& 7 n^{\frac{1}{\log_7 2}} - 6n^2\\
-&=& 7 n^{\frac{1}{\frac{\log 2}{\log 7}}} - 6n^2\\
-&=& 7 n^{\frac{\log 7}{\log 2}} - 6n^2\\
-&=& 7 n^{\log_2 7} - 6n^2\\
+T(n) &=& 7T(\frac{n}{2}) + \frac{9}{2}n^2\\
+&=& 7(2(\frac{n}{2})^3 - (\frac{n}{2})^2) + \frac{9}{2}n^2\\
+&=& 7(2\frac{n^3}{4} - \frac{n^2}{4}) + \frac{9}{2}n^2\\
+&=& 14\frac{n^3}{4} - 7\frac{n^2}{4} + \frac{9}{2}n^2\\
+&=& \frac{7n^3}{2} - \frac{11n^2}{2}\\
 \end{array}
 \]
-This gives us the following function, which we wish to minimize over all $n$:
-\[
-    f(n)= 
-\begin{cases}
-    7 n^{\log_2 7} - 6n^2, & \text{if } n > n_0 \\
-    2n^3 - n^2, & \text{if } n \leq n_0\\
-\end{cases}
-\]
 
-We can analytically determine the value of $n_0$ that optimizes the running time of the variant of Strassen's we are studying by setting equal both cases contained in $f$ and solving for $n$. Using Mathematica to solve the equation $7^{(\log_2 n) + 1}-6 n^2 = 2n^3 - n^2$, we see that both sides are equal when $n = 1$ and $n \approx 654.031$. The former value of $n$ is uninteresting, since we already know that the base case of Strassen's algorithm (i.e., when $n=1$) functions the same as the conventional method. Thus, we have analytically determined that $n_0 \approx 654.031$.
+We can then compare this to the conventional method and determine at which point switching to Strassen's begins to benefit the running time (since the above recurrence is the recurrence containing one call to Strassen's). We set $\frac{7n^3}{2} - \frac{11n^2}{2}$ equal to $2n^3 - n^2$ and achieve an intersection at 15. Thus Strassen's becomes effective when $n = 15$. When $n=15$ with one call to Strassen's the cutoff point is 7.5, however because it does not make sense to cutoff at 7.5 we round up to 8 (if we had rounded down to 7 then Strassen's should have become effective at $n = 14$. Alternatively, once can see that rounding up makes sense by realizing that Strassen's is the same as the conventional method at $n=15$ and only becomes better at $n = 16$). Thus analytically the cutoff point should be 8.
 
 \section*{Experimental Approach}
 
 \hspace{4mm}We first implemented the conventional algorithm for matrix multiplication. We then implemented Strassen's algorithm for matrices where $n$ is a power of 2. We extended this implementation for more general values of $n$ by padding the initial matrices with $N - n$  0's where $N$ is the closest power of 2 greater than or equal to $n$, as suggested in the hints section of the spec. We tied the two algorithms together by adding a conditional to our implementation of Strassen's to check whether or not the current dimension is less than or equal to some cutoff value $n_0$; if so, computation switches to our implementation of the conventional algorithm from within Strassen's algorithm. 
 
-We tested for the optimal value of $n_0$ by running our modified version of Strassen's algorithm on matrices where $n=500$ and $n=1000$. In these matrices, every element was randomly selected to be 0, 1, or 2. The graphs below, which plot the running time for each possible value of $n_0$ against the time of computation averaged over 15 runs, show our results. 
+We tested for the optimal value of $n_0$ by running our modified version of Strassen's algorithm on matrices where $n=500$ and $n=1000$. In these matrices, every element was randomly selected to be 0, 1, or 2. The graphs below, which plot the running time for each possible value of $n_0$ against the time of computation averaged over 45 and 15 runs respectively, show our results. 
 
 \begin{center}
 \includegraphics[scale=0.72]{crossover-v-compute-time-500-msec.pdf}
@@ -56,13 +46,19 @@ Each step indicates the time (in milliseconds) required to multiply two matrices
 \section*{Discussion}
 
 \subsection*{Crossover Point}
-The lowest crossover point we could decide on was $n_0 = 32$, as discussed above.
+The lowest crossover point we could decide on was $n_0 = 64$, as discussed above. While all arithmetic operations are assumed to be cost 1 in the analytical approximation of the crossover point, in reality these operations have distinct values. Furthermore, some operations were assumed to be free in the analytical approach
 
 \subsection*{Difficulties}
 Several difficulties arose when implementing Strassen's.
 
 \subsection*{Optimization}
-We sped things up by taking locality of reference into consideration when implementing the conventional algorithm. We applied several optimizations to our implementation of Strassen's.
+We sped things up by taking locality of reference into consideration when implementing the conventional algorithm. 
+
+We applied several optimizations to our implementation of Strassen's. First, we worked to re-use memory whenever possible to minimize the number of system calls like \texttt{malloc} and \texttt{free}. We did this by allocating the necessary space for all matrices $P$ from Strassen's algorithm and then one more for workspace. Using this method and being cautious about memory usage we were able to limit ourselves to one call to \texttt{malloc} and one call to \texttt{free} in each call to Strassen's. (Note: while it might be possible to further optimize and use only one \texttt{malloc} and \texttt{free} for the entire algorithm, we decided that the number of calls was small enough so as to make this difference negligible in our experimentation as a whole). The implementation of the technique we did use was not trivial and required the creation of a matrix struct to store the metadata allowing us to locate each sub-matrix within the original matrix. Originally, we worked with \texttt{matrix} structs, passing them around by pointer, but this hurt cache line optimization. Because only the contained array is of significant size and it is stored via reference, we were able to work with \texttt{matrix} structs without the use of pointers.
+
+Additionally we optimized the calculation of AE + BG and CF + DH in Strassen's by creating special functions that simultaneously perform all the necessary additions and subtractions (to avoid multiple passthroughs).
+
+Finally, we optimized the calculation of the necessary padding using a bit manipulation technique described here: http://graphics.stanford.edu/~seander/bithacks.html. We added a conditional to this technique to allow the code to work on both 32 and 64 bit architectures (assuming it is compiled on each architecture separately).
 
 \subsection*{Timing}
 We defined the runtime of our implementation of the modified Strassen's algorithm as the number of clock cycles elapsed while the multiplication algorithm was running on the CPU. That is, we used CPU time as our definition of time. Note that this does not include the time required to pad matrices, if necessary, or print the diagonal elements of the final matrix. Although important to the total runtime of our program, these steps do not figure into finding the optimal crossover point because they are not part of then matrix multiplication step.
@@ -71,7 +67,7 @@ We defined the runtime of our implementation of the modified Strassen's algorith
 The largest value of $n$ we tested on was $n = 2500$. 
 
 \subsection*{Matrix Type}
-In our implementation we chose to multiply {\tt ints}, specifically {\tt int32\_ts}, but this choice does not matter. We could just as easily swap them out for floats, and the program would function as expected.
+In our implementation we chose to multiply {\tt int}'s, specifically {\tt int32\_t}'s (to be consistent across architectures), but this choice does not matter. We could just as easily swap them out for floats, and the program would function as expected.
 
 \end{document}
 
