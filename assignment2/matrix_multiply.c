@@ -4,7 +4,7 @@
 #include "matrix_multiply.h"
 
 // used for averaging results when flag is 1
-//#define NUMTRIALS 15
+#define NUMTRIALS 15
 
 // Determined experimentally, as described in the writeup
 #define CROSSOVER 64
@@ -23,8 +23,6 @@ typedef struct {
 
 //int32_t crossover;
 
-// mrow_off = Matrix m row offset
-// mcol_off = Matrix m col offset
 void print_matrix(const matrix m, size_t dim) {
     for (size_t i = 0; i < dim; i++) {
         printf("| ");
@@ -216,13 +214,10 @@ int main(int argc, char **argv) {
     size_t j;
 
     // if not a power of 2, pad appropriately
-    //    padding done to reach crossover + 2^n
     size_t dim_pad = dim;
-    //    int32_t dim_pad = (int32_t)ceil((double)dim / (double)crossover);
     if ((dim & (dim - 1)) != 0) {
-    // Bit Twiddling Hack for finding next highest power of 2
-    //   http://graphics.stanford.edu/~seander/bithacks.html
-    //   -expects 32 bit architecture
+        // Bit Twiddling Hack for finding next highest power of 2
+        //   http://graphics.stanford.edu/~seander/bithacks.html
         dim_pad--;
         dim_pad |= dim_pad >> 1;
         dim_pad |= dim_pad >> 2;
@@ -234,7 +229,6 @@ int main(int argc, char **argv) {
             dim_pad |= dim_pad >> 32;
         dim_pad++;
     }
-    // dim_pad += dim;
 
     matrix ma = {.matrix = (int32_t *) malloc(sizeof(int32_t) * dim_pad * dim_pad),
                  .row_off = 0, .col_off = 0, .dim_real = dim_pad};
@@ -270,8 +264,8 @@ int main(int argc, char **argv) {
                  .row_off = 0, .col_off = 0, .dim_real = dim_pad};
 
     int numtrials = 1;
-    //if (flag == 1)
-    //    numtrials = NUMTRIALS;
+    if (flag == 1)
+        numtrials = NUMTRIALS;
 
     // track CPU time for the modified Strassen's
     int time_total = 0;
