@@ -49,7 +49,7 @@ We tested for the optimal value of $n_0$ by running our modified version of Stra
 \includegraphics[scale=0.72]{crossover-v-compute-time-1000-msec.pdf}
 \end{center}
 
-The stepped pattern in the graphs is immediately clear. Each step corresponds approximately to the nearest power of 2, a side-effect of our padding method (MORE DETAIL), and indicates the time (in microseconds) required to multiply two matrices of the indicated size. In the graph where $n=500$, our minimum compute time, XXX ms, occurs at a crossover of XX. In the graph where $n=1000$, our minimum compute time, 505.27 ms, occurs at a crossover of 34. In both graphs, the lowest step begins near a crossover value of 32, leading us to conclude that in practice, $n_0 = 32$. This cutoff value is now hardcoded into our implementation as a constant; the infrastructure we used to find it is still in place, just commented out. EXPLAIN drop-off at the end?
+The stepped pattern in the graphs is immediately clear. Each step corresponds approximately to the nearest power of 2, a side-effect of our padding method (MORE DETAIL), and indicates the time (in microseconds) required to multiply two matrices of the indicated size. In the graph where $n=500$, our minimum compute time, 70.4 ms, occurs at a crossover of 113. In the graph where $n=1000$, our minimum compute time, 505.07 ms, occurs at a crossover of 63. In both graphs, the lowest step begins near a crossover value of 64, leading us to conclude that in practice, $n_0 = 64$. This cutoff value is now hardcoded into our implementation as a constant; the infrastructure we used to find it is still in place, just commented out. EXPLAIN drop-off at the end?
 
 \section*{Discussion}
 
