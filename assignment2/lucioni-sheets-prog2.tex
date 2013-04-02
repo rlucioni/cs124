@@ -65,6 +65,9 @@ Several difficulties arose when implementing Strassen's.
 \subsection*{Optimization}
 We sped things up by taking locality of reference into consideration when implementing the conventional algorithm. We applied several optimizations to our implementation of Strassen's.
 
+\subsection*{Timing}
+We defined the runtime of our implementation of the modified Strassen's algorithm as the number of clock cycles elapsed while the multiplication algorithm was running on the CPU. That is, we used CPU time as our definition of time. Note that this does not include the time required to pad matrices, if necessary, or print the diagonal elements of the final matrix. Although important to the total runtime of our program, these steps do not figure into finding the optimal crossover point because they are not part of then matrix multiplication step.
+
 \subsection*{Largest $n$}
 The largest value of $n$ we tested on was $n = 2500$. 
 
