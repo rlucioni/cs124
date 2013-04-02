@@ -4,7 +4,7 @@
 #include "matrix_multiply.h"
 
 // used for averaging results when flag is 1
-#define NUMTRIALS 30
+#define NUMTRIALS 15
 
 // Determined experimentally, as described in the writeup
 //#define CROSSOVER 32
