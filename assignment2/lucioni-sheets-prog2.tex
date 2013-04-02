@@ -49,7 +49,7 @@ Each step indicates the time (in milliseconds) required to multiply two matrices
 \hspace{4mm} The lowest crossover point we could decide on was $n_0 = 64$, as discussed above. While all arithmetic operations are assumed to be cost 1 in the analytical approximation of the crossover point, in reality these operations have distinct values. Furthermore, some operations were assumed to be free in the analytical approach, explaining the discrepancy between the analytically and experimentally determined crossover values.
 
 \subsection*{Difficulties}
-\hspace{4mm} Several difficulties arose when implementing Strassen's. The most pressing of these challenges was how to properly utilize and re-use memory, however, this is an optimization issue and so we will leave discussion of this topic to that section. We did struggle to some degree finding out how to properly index into our original matrices in order to work in place, however, via classic debugging techniques like print statements, we were bale to solve our problems.
+\hspace{4mm} Several difficulties arose when implementing Strassen's. The most pressing of these challenges was how to properly utilize and re-use memory. That said, this is an optimization issue, and so we will hold off on discussion of this topic until the next subsection. We also struggled to properly index into our original matrices in order to work in place. Using standard debugging techniques such as print statements, we were able to solve this problem relatively quickly.
 
 \subsection*{Optimization}
 \hspace{4mm} We optimized our implementation of the conventional algorithm by taking locality of reference into consideration in our three {\tt for} loops.
