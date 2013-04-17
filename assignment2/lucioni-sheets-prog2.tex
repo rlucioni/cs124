@@ -35,8 +35,8 @@ We can then compare this to the conventional method and determine at which point
 We tested for the optimal value of $n_0$ by running our modified version of Strassen's algorithm on matrices where $n=500$ and $n=1000$. In these matrices, every element was randomly selected to be 0, 1, or 2. The graphs below illustrate our results, plotting the computation time associated with each possible value of $n_0$, averaged over 45 and 15 runs for $n=500$ and $n=1000$, respectively.
 
 \begin{center}
-\includegraphics[scale=0.8]{crossover-v-compute-time-500-msec.pdf}
-\includegraphics[scale=0.8]{crossover-v-compute-time-1000-msec.pdf}
+\includegraphics[scale=0.72]{crossover-v-compute-time-500-msec.pdf}
+\includegraphics[scale=0.72]{crossover-v-compute-time-1000-msec.pdf}
 \end{center}
 
 The most prominent feature of these graphs is their stepped pattern. This results from the fact that Strassen's operates on matrices for which $n$ is a power of 2 - the initial padding for all other matrices guarantees this. In each recursive call to Strassen's, $n$ is cut in half. Consequently, for all $n_0$ in a range of the form $[2^m, 2^{m+1})$, the crossover will take effect after the same number of calls to Strassen's algorithm, and thus the running time is expected to behave the same. To see this, consider the case in which $n$ is initially 64. For any value of $n_0$ in the range $[32,64)$, Strassen's will execute once before control is passed to the conventional algorithm. After one iteration of Strassen's, $n= 32$, and thus all previously mentioned crossover points would have taken effect. Note that this logic also explains why the steps occur at powers of 2.

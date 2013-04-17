@@ -225,8 +225,8 @@ int main(int argc, char **argv) {
         dim_pad |= dim_pad >> 8;
         dim_pad |= dim_pad >> 16;
         // handle 64 bit
-        if (sizeof(size_t) == 8)
-            dim_pad |= dim_pad >> 32;
+        //if (sizeof(size_t) == 8)
+        //    dim_pad |= dim_pad >> 32;
         dim_pad++;
     }
 
@@ -246,7 +246,7 @@ int main(int argc, char **argv) {
         }
 
     // for large matrices
-    rewind(fp);
+    //rewind(fp);
 
     matrix mb = {.matrix = (int32_t *) malloc(sizeof(int32_t) * dim_pad * dim_pad),
                  .row_off = 0, .col_off = 0, .dim_real = dim_pad};
