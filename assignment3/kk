@@ -1,0 +1,5 @@
+#!/bin/sh
+
+inputfile=$1
+
+python kk.py $inputfile
