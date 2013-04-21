@@ -15,18 +15,18 @@ do
 done
 
 # generate matrix where entries are randomly 0, 1, or 2
-rm matrices_012.txt
-for ((i=1; i<=$((2*($d*$d))); i++))
-do
-    printf "$((RANDOM%3))\n" >> matrices_012.txt
-done
+#rm matrices_012.txt
+#for ((i=1; i<=$((2*($d*$d))); i++))
+#do
+#    printf "$((RANDOM%3))\n" >> matrices_012.txt
+#done
 
 # generate matrix where entries are randomly 0, 1, or -1
-rm matrices_neg.txt
-for ((i=1; i<=$((2*($d*$d))); i++))
-do
-    printf "%d\n" $((RANDOM%3-1)) >> matrices_neg.txt
-done
+#rm matrices_neg.txt
+#for ((i=1; i<=$((2*($d*$d))); i++))
+#do
+#    printf "%d\n" $((RANDOM%3-1)) >> matrices_neg.txt
+#done
 
 # generate matrix where entries are randomly a real in [0,1]
 #rm matrices_real.txt

@@ -8,9 +8,15 @@
 \header{3}{April 30, 2013, at 11:40 AM}{}{}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\section*{Section}
+\section*{Dynamic Programming Approach}
+TODO
 
 
+\section*{Karmarkar-Karp Runtime}
+\hspace{4mm} Assuming the values in $A$ are small enough that arithmetic operations take one step, the Karmarkar-Karp algorithm can be implemented in $O(n \log n)$ steps by applying mergesort to the values in $A$, which we know takes time $O(n \log n)$. The sort allows us to avoid searching for the two largest elements in $A$ at each iteration of the Karmarkar-Karp algorithm, reducing each iteration (i.e., taking the largest two elements remaining in A at each step and differencing them) to a series of constant time operations. The number of iterations of the Karmarkar-Karp algorithm required to partition the numbers takes time $O(n)$, so the entire process takes time $O(n \log n + n) = O(n \log n)$.
+
+
+\section*{Experimental Results and Discussion}
 
 \end{document}
 
