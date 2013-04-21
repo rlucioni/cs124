@@ -1,13 +1,13 @@
-from collections import deque
+import sys
 
-f = open(argv[1], 'r')
-A = deque()
-for i in range(100):
-	A.append(int(f.readline()))
+f = open(sys.argv[1], 'r')
+A = []
+for line in f:
+	A.append(int(line))
 
 A.sort()
 
 while len(A) > 1:
-	A.append(abs(A.popleft() - A.popleft()))
+	A.insert(0,abs(A.pop() - A.pop()))
 
 print A[0]
