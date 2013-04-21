@@ -60,7 +60,7 @@ def rep_random_std(A):
 		if residue_std(A,Sp) < residue_std(A,S):
 			S = Sp
 		if i % GRANULARITY == 0:
-			rep_random_std_lst[i / GRANULARITY] += residue_std(A,S)
+			rep_random_std_lst[i / GRANULARITY] += residue_std(A,S)/50
 	return residue_std(A,S)
 
 def hill_climb_std(A):
@@ -70,7 +70,7 @@ def hill_climb_std(A):
 		if residue_std(A,Sp) < residue_std(A,S):
 			S = Sp
 		if i % GRANULARITY == 0:
-			hill_climb_std_lst[i / GRANULARITY] += residue_std(A,S)
+			hill_climb_std_lst[i / GRANULARITY] += residue_std(A,S)/50
 	return residue_std(A,S)
 
 def anneal_std(A):
@@ -85,7 +85,7 @@ def anneal_std(A):
 		if residue_std(A,S) < residue_std(A,Spp):
 			Spp = S
 		if i % GRANULARITY == 0:
-			anneal_std_lst[i / GRANULARITY] += residue_std(A,Spp)
+			anneal_std_lst[i / GRANULARITY] += residue_std(A,Spp)/50
 	return residue_std(A,Spp)
 
 def rep_random_pp(A):
@@ -95,7 +95,7 @@ def rep_random_pp(A):
 		if residue_pp(A,Sp) < residue_pp(A,S):
 			S = Sp
 		if i % GRANULARITY == 0:
-			rep_random_pp_lst[i / GRANULARITY] += residue_pp(A,S)
+			rep_random_pp_lst[i / GRANULARITY] += residue_pp(A,S)/50
 	return residue_pp(A,S)
 
 def hill_climb_pp(A):
@@ -105,7 +105,7 @@ def hill_climb_pp(A):
 		if residue_pp(A,Sp) < residue_pp(A,S):
 			S = Sp
 		if i % GRANULARITY == 0:
-			hill_climb_pp_lst[i / GRANULARITY] += residue_pp(A,S)
+			hill_climb_pp_lst[i / GRANULARITY] += residue_pp(A,S)/50
 	return residue_pp(A,S)
 
 def anneal_pp(A):
@@ -120,7 +120,7 @@ def anneal_pp(A):
 		if residue_pp(A,S) < residue_pp(A,Spp):
 			Spp = S
 		if i % GRANULARITY == 0:
-			anneal_pp_lst[i / GRANULARITY] += residue_pp(A,Spp)
+			anneal_pp_lst[i / GRANULARITY] += residue_pp(A,Spp)/50
 	return residue_pp(A,Spp)
 
 rep_random_std_lst = [0] * (MAX_ITER / GRANULARITY)
