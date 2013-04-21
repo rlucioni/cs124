@@ -1,19 +1,24 @@
 import random
+import math
+import copy
 
 MAX_ITER = 25000
+GRANULARITY = 100
+
+def T(i): return (10**10) * ((0.8) ** math.floor(i / 300))
 
 def gen_std(n):
 	S = []
 	for i in range(n):
 		if random.random() < 0.5:
-			S[i] = 1
+			S.append(1)
 		else:
-			S[i] = -1
+			S.append(-1)
 	return S
 
 def neighbor_std(S):
 	i,j = 0,0
-	while i = j:
+	while i == j:
 		i,j = random.randrange(0,len(S)),random.randrange(0,len(S))
 	S[i] = -S[i]
 	if random.random() < 0.5:
@@ -21,17 +26,17 @@ def neighbor_std(S):
 	return S
 
 def residue_std(A,S):
-	return sum([(a*b) for a,b in zip(A,S)])
+	return abs(sum([(a*b) for a,b in zip(A,S)]))
 
 def gen_pp(n):
 	S = []
 	for i in range(n):
-		S[i] = random.randrange(0,n)
+		S.append(random.randrange(0,n))
 	return S
 
 def neighbor_pp(S):
 	i,j = 0,0
-	while S[i] = j:
+	while S[i] == j:
 		i,j = random.randrange(0,len(S)),random.randrange(0,len(S))
 	S[i] = j
 	return S
@@ -48,14 +53,84 @@ def kk(A):
 		A.insert(0,abs(A.pop() - A.pop()))
 	return A[0]
 
-def rep_random(A):
-	pass
+def rep_random_std(A):
+	S = gen_std(len(A))
+	for i in range(MAX_ITER):
+		Sp = gen_std(len(A))
+		if residue_std(A,Sp) < residue_std(A,S):
+			S = Sp
+		if i % GRANULARITY == 0:
+			rep_random_std_lst[i / GRANULARITY] += residue_std(A,S)
+	return residue_std(A,S)
 
-def hill_climb(A):
-	pass
+def hill_climb_std(A):
+	S = gen_std(len(A))
+	for i in range(MAX_ITER):
+		Sp = neighbor_std(S)
+		if residue_std(A,Sp) < residue_std(A,S):
+			S = Sp
+		if i % GRANULARITY == 0:
+			hill_climb_std_lst[i / GRANULARITY] += residue_std(A,S)
+	return residue_std(A,S)
 
-def anneal(A):
-	pass
+def anneal_std(A):
+	S = gen_std(len(A))
+	Spp = S
+	for i in range(MAX_ITER):
+		Sp = neighbor_std(S)
+		if residue_std(A,Sp) < residue_std(A,S):
+			S = Sp
+		elif random.random() < math.exp(-(residue_std(A,Sp) - residue_std(A,S)) / T(i)):
+			S = Sp
+		if residue_std(A,S) < residue_std(A,Spp):
+			Spp = S
+		if i % GRANULARITY == 0:
+			anneal_std_lst[i / GRANULARITY] += residue_std(A,Spp)
+	return residue_std(A,Spp)
+
+def rep_random_pp(A):
+	S = gen_pp(len(A))
+	for i in range(MAX_ITER):
+		Sp = gen_pp(len(A))
+		if residue_pp(A,Sp) < residue_pp(A,S):
+			S = Sp
+		if i % GRANULARITY == 0:
+			rep_random_pp_lst[i / GRANULARITY] += residue_pp(A,S)
+	return residue_pp(A,S)
+
+def hill_climb_pp(A):
+	S = gen_pp(len(A))
+	for i in range(MAX_ITER):
+		Sp = neighbor_pp(S)
+		if residue_pp(A,Sp) < residue_pp(A,S):
+			S = Sp
+		if i % GRANULARITY == 0:
+			hill_climb_pp_lst[i / GRANULARITY] += residue_pp(A,S)
+	return residue_pp(A,S)
+
+def anneal_pp(A):
+	S = gen_pp(len(A))
+	Spp = S
+	for i in range(MAX_ITER):
+		Sp = neighbor_pp(S)
+		if residue_pp(A,Sp) < residue_pp(A,S):
+			S = Sp
+		elif random.random() < math.exp(-(residue_pp(A,Sp) - residue_pp(A,S)) / T(i)):
+			S = Sp
+		if residue_pp(A,S) < residue_pp(A,Spp):
+			Spp = S
+		if i % GRANULARITY == 0:
+			anneal_pp_lst[i / GRANULARITY] += residue_pp(A,Spp)
+	return residue_pp(A,Spp)
+
+rep_random_std_lst = [0] * (MAX_ITER / GRANULARITY)
+hill_climb_std_lst = [0] * (MAX_ITER / GRANULARITY)
+anneal_std_lst = [0] * (MAX_ITER / GRANULARITY)
+rep_random_pp_lst = [0] * (MAX_ITER / GRANULARITY)
+hill_climb_pp_lst = [0] * (MAX_ITER / GRANULARITY)
+anneal_pp_lst = [0] * (MAX_ITER / GRANULARITY)
+
+output_lst = [rep_random_std_lst,hill_climb_std_lst,anneal_std_lst,rep_random_pp_lst,hill_climb_pp_lst,anneal_pp_lst]
 
 for i in range(50):
 	# generate random instance
@@ -63,11 +138,31 @@ for i in range(50):
 	for j in range(100):
 		A.append(random.randrange(0,10**12))
 
+	iter_result = []
+
 	# run kk
-	kk_result = kk(A)
+	iter_result.append(kk(copy.deepcopy(A)))
 
 	# run repeated random
+	print "rep_random"
+	iter_result.append(rep_random_std(A))
+	iter_result.append(rep_random_pp(A))
 
 	# run hill climbing
+	print "hill_climb"
+	iter_result.append(hill_climb_std(A))
+	iter_result.append(hill_climb_pp(A))
 
 	# run simulated annealing
+	print "anneal"
+	iter_result.append(anneal_std(A))
+	iter_result.append(anneal_pp(A))
+
+	print " & ".join(map(lambda x: str(x),iter_result))
+
+f = open("graph_output", "w")
+for lst in output_lst:
+	for i in lst:
+		f.write(i)
+	f.write("###")
+f.close()
