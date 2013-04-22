@@ -131,8 +131,7 @@ rep_random_pp_lst = [0] * num_data_points
 hill_climb_pp_lst = [0] * num_data_points
 anneal_pp_lst = [0] * num_data_points
 
-#for i in range(50):
-for i in range(1):
+for i in range(50):
 	# generate random instance
 	A = []
 	for j in range(100):
