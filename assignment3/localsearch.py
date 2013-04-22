@@ -131,7 +131,8 @@ rep_random_pp_lst = [0] * num_data_points
 hill_climb_pp_lst = [0] * num_data_points
 anneal_pp_lst = [0] * num_data_points
 
-for i in range(50):
+#for i in range(50):
+for i in range(1):
 	# generate random instance
 	A = []
 	for j in range(100):
@@ -164,6 +165,6 @@ output_lst = [copy.deepcopy(rep_random_std_lst), copy.deepcopy(hill_climb_std_ls
 f = open("graph_output.txt", "w")
 for lst in output_lst:
 	for i in lst:
-		f.write(str(i))
-	f.write("###")
+		f.write(str(i)+"\n")
+	f.write("###\n")
 f.close()
