@@ -123,14 +123,13 @@ def anneal_pp(A):
 			anneal_pp_lst[i / GRANULARITY] += residue_pp(A,Spp)/50
 	return residue_pp(A,Spp)
 
-rep_random_std_lst = [0] * (MAX_ITER / GRANULARITY)
-hill_climb_std_lst = [0] * (MAX_ITER / GRANULARITY)
-anneal_std_lst = [0] * (MAX_ITER / GRANULARITY)
-rep_random_pp_lst = [0] * (MAX_ITER / GRANULARITY)
-hill_climb_pp_lst = [0] * (MAX_ITER / GRANULARITY)
-anneal_pp_lst = [0] * (MAX_ITER / GRANULARITY)
-
-output_lst = [rep_random_std_lst,hill_climb_std_lst,anneal_std_lst,rep_random_pp_lst,hill_climb_pp_lst,anneal_pp_lst]
+num_data_points = (MAX_ITER / GRANULARITY)
+rep_random_std_lst = [0] * num_data_points
+hill_climb_std_lst = [0] * num_data_points
+anneal_std_lst = [0] * num_data_points
+rep_random_pp_lst = [0] * num_data_points
+hill_climb_pp_lst = [0] * num_data_points
+anneal_pp_lst = [0] * num_data_points
 
 for i in range(50):
 	# generate random instance
@@ -159,6 +158,8 @@ for i in range(50):
 	iter_result.append(anneal_pp(A))
 
 	print " & ".join(map(lambda x: str(x),iter_result))
+
+output_lst = [copy.deepcopy(rep_random_std_lst), copy.deepcopy(hill_climb_std_lst), copy.deepcopy(anneal_std_lst), copy.deepcopy(rep_random_pp_lst), copy.deepcopy(hill_climb_pp_lst), copy.deepcopy(anneal_pp_lst)]
 
 f = open("graph_output", "w")
 for lst in output_lst:
