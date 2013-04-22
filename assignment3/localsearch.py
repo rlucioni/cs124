@@ -164,6 +164,6 @@ output_lst = [copy.deepcopy(rep_random_std_lst), copy.deepcopy(hill_climb_std_ls
 f = open("graph_output.txt", "w")
 for lst in output_lst:
 	for i in lst:
-		f.write(i)
+		f.write(str(i))
 	f.write("###")
 f.close()
