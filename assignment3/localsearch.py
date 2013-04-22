@@ -143,17 +143,17 @@ for i in range(50):
 	iter_result.append(kk(copy.deepcopy(A)))
 
 	# run repeated random
-	print "rep_random"
+	#print "rep_random"
 	iter_result.append(rep_random_std(A))
 	iter_result.append(rep_random_pp(A))
 
 	# run hill climbing
-	print "hill_climb"
+	#print "hill_climb"
 	iter_result.append(hill_climb_std(A))
 	iter_result.append(hill_climb_pp(A))
 
 	# run simulated annealing
-	print "anneal"
+	#print "anneal"
 	iter_result.append(anneal_std(A))
 	iter_result.append(anneal_pp(A))
 
@@ -161,7 +161,7 @@ for i in range(50):
 
 output_lst = [copy.deepcopy(rep_random_std_lst), copy.deepcopy(hill_climb_std_lst), copy.deepcopy(anneal_std_lst), copy.deepcopy(rep_random_pp_lst), copy.deepcopy(hill_climb_pp_lst), copy.deepcopy(anneal_pp_lst)]
 
-f = open("graph_output", "w")
+f = open("graph_output.txt", "w")
 for lst in output_lst:
 	for i in lst:
 		f.write(i)
