@@ -31,7 +31,7 @@ def residue_std(A,S):
 def gen_pp(n):
 	S = []
 	for i in range(n):
-		S.append(random.randrange(0,n))
+		S.append(random.randrange(1,n))
 	return S
 
 def neighbor_pp(S):
@@ -58,7 +58,7 @@ def rep_random_std(A):
 	for i in range(MAX_ITER):
 		Sp = gen_std(len(A))
 		if residue_std(A,Sp) < residue_std(A,S):
-			S = Sp
+			S = copy.deepcopy(Sp)
 		if i % GRANULARITY == 0:
 			rep_random_std_lst[i / GRANULARITY] += residue_std(A,S)/50
 	return residue_std(A,S)
@@ -66,24 +66,24 @@ def rep_random_std(A):
 def hill_climb_std(A):
 	S = gen_std(len(A))
 	for i in range(MAX_ITER):
-		Sp = neighbor_std(S)
+		Sp = neighbor_std(copy.deepcopy(S))
 		if residue_std(A,Sp) < residue_std(A,S):
-			S = Sp
+			S = copy.deepcopy(Sp)
 		if i % GRANULARITY == 0:
 			hill_climb_std_lst[i / GRANULARITY] += residue_std(A,S)/50
 	return residue_std(A,S)
 
 def anneal_std(A):
 	S = gen_std(len(A))
-	Spp = S
+	Spp = copy.deepcopy(S)
 	for i in range(MAX_ITER):
-		Sp = neighbor_std(S)
+		Sp = neighbor_std(copy.deepcopy(S))
 		if residue_std(A,Sp) < residue_std(A,S):
-			S = Sp
+			S = copy.deepcopy(Sp)
 		elif random.random() < math.exp(-(residue_std(A,Sp) - residue_std(A,S)) / T(i)):
-			S = Sp
+			S = copy.deepcopy(Sp)
 		if residue_std(A,S) < residue_std(A,Spp):
-			Spp = S
+			Spp = copy.deepcopy(S)
 		if i % GRANULARITY == 0:
 			anneal_std_lst[i / GRANULARITY] += residue_std(A,Spp)/50
 	return residue_std(A,Spp)
@@ -93,7 +93,7 @@ def rep_random_pp(A):
 	for i in range(MAX_ITER):
 		Sp = gen_pp(len(A))
 		if residue_pp(A,Sp) < residue_pp(A,S):
-			S = Sp
+			S = copy.deepcopy(Sp)
 		if i % GRANULARITY == 0:
 			rep_random_pp_lst[i / GRANULARITY] += residue_pp(A,S)/50
 	return residue_pp(A,S)
@@ -101,24 +101,24 @@ def rep_random_pp(A):
 def hill_climb_pp(A):
 	S = gen_pp(len(A))
 	for i in range(MAX_ITER):
-		Sp = neighbor_pp(S)
+		Sp = neighbor_pp(copy.deepcopy(S))
 		if residue_pp(A,Sp) < residue_pp(A,S):
-			S = Sp
+			S = copy.deepcopy(Sp)
 		if i % GRANULARITY == 0:
 			hill_climb_pp_lst[i / GRANULARITY] += residue_pp(A,S)/50
 	return residue_pp(A,S)
 
 def anneal_pp(A):
 	S = gen_pp(len(A))
-	Spp = S
+	Spp = copy.deepcopy(S)
 	for i in range(MAX_ITER):
-		Sp = neighbor_pp(S)
+		Sp = neighbor_pp(copy.deepcopy(S))
 		if residue_pp(A,Sp) < residue_pp(A,S):
-			S = Sp
+			S = copy.deepcopy(Sp)
 		elif random.random() < math.exp(-(residue_pp(A,Sp) - residue_pp(A,S)) / T(i)):
-			S = Sp
+			S = copy.deepcopy(Sp)
 		if residue_pp(A,S) < residue_pp(A,Spp):
-			Spp = S
+			Spp = copy.deepcopy(S)
 		if i % GRANULARITY == 0:
 			anneal_pp_lst[i / GRANULARITY] += residue_pp(A,Spp)/50
 	return residue_pp(A,Spp)
@@ -136,7 +136,7 @@ for i in range(50):
 	# generate random instance
 	A = []
 	for j in range(100):
-		A.append(random.randrange(0,10**12))
+		A.append(random.randrange(01,10**12))
 
 	iter_result = []
 
