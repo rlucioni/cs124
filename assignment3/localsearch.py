@@ -136,7 +136,7 @@ for i in range(50):
 	# generate random instance
 	A = []
 	for j in range(100):
-		A.append(random.randrange(01,10**12))
+		A.append(random.randrange(1,10**12))
 
 	iter_result = []
 
