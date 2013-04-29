@@ -143,19 +143,14 @@ for i in range(50):
 	# run kk
 	iter_result.append(kk(copy.deepcopy(A)))
 
-	# run repeated random
-	#print "rep_random"
+	# run standard representation algorithms
 	iter_result.append(rep_random_std(A))
-	iter_result.append(rep_random_pp(A))
-
-	# run hill climbing
-	#print "hill_climb"
 	iter_result.append(hill_climb_std(A))
-	iter_result.append(hill_climb_pp(A))
-
-	# run simulated annealing
-	#print "anneal"
 	iter_result.append(anneal_std(A))
+
+	# run prepartioning algorithms
+	iter_result.append(rep_random_pp(A))
+	iter_result.append(hill_climb_pp(A))
 	iter_result.append(anneal_pp(A))
 
 	print " & ".join(map(lambda x: str(x),iter_result))
