@@ -1,6 +1,7 @@
 import random
 import math
 import copy
+from bisect import insort_left
 
 MAX_ITER = 25000
 GRANULARITY = 100
@@ -50,7 +51,7 @@ def residue_pp(A,S):
 def kk(A):
 	A.sort()
 	while len(A) > 1:
-		A.insert(0,abs(A.pop() - A.pop()))
+		insort_left(A,abs(A.pop() - A.pop()))
 	return A[0]
 
 def rep_random_std(A):
