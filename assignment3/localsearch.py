@@ -36,7 +36,7 @@ def gen_pp(n):
 	return S
 
 def neighbor_pp(S):
-	i,j = 0,0
+	i,j = random.randrange(0,len(S)),random.randrange(0,len(S))
 	while S[i] == j:
 		i,j = random.randrange(0,len(S)),random.randrange(0,len(S))
 	S[i] = j
