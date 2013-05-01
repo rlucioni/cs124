@@ -46,7 +46,7 @@ plt.xlabel('Iterations')
 plt.ylabel('Residue')
 plt.axis([0,25001,100000000,5000000000000])
 #plt.axis([0,25001,0,4000000])
-plt.legend((p2,p3,p4,), ('KK','RR','HC','SA'), 'upper right')
+plt.legend((p2,p3,p4,), ('RR','HC','SA'), 'upper right')
 #plt.legend((p1,p2,p3,p4,), ('KK','PPRR','PPHC','PPSA'), 'upper right')
 
 # save figure as a pdf
