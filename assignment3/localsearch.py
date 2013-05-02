@@ -141,15 +141,15 @@ for i in range(50):
 	iter_result = []
 
 	# run kk
-	#iter_result.append(kk(copy.deepcopy(A)))
+	iter_result.append(kk(copy.deepcopy(A)))
 
 	# run standard representation algorithms
-	#iter_result.append(rep_random_std(A))
-	#iter_result.append(hill_climb_std(A))
-	#iter_result.append(anneal_std(A))
+	iter_result.append(rep_random_std(A))
+	iter_result.append(hill_climb_std(A))
+	iter_result.append(anneal_std(A))
 
 	# run prepartioning algorithms
-	#iter_result.append(rep_random_pp(A))
+	iter_result.append(rep_random_pp(A))
 	iter_result.append(hill_climb_pp(A))
 	iter_result.append(anneal_pp(A))
 

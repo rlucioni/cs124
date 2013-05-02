@@ -235,20 +235,18 @@ instead of just documentclass{cs121}.}
     \setlength{\parskip}{0.0in}      % Use late date NONE for no lateness.
     \begin{center}
    %{\large \bf Harvard University}\\
-   {\Large \bf Computer Science 124}\\
+   {\Large \bf Computer Science 124: Programming Assignment #1}\\
    \vspace{4 mm}
-   {\bf Renzo Lucioni (HUID: 90760092)}\\
-   %{\bf Matt Sheets (HUID: 50834689)}\\
-   {\bf Vipul Shekhawat (HUID: 60798931)}\\
+   {\bf Renzo Lucioni (HUID: 90760092) and Vipul Shekhawat (HUID: 60798931)}\\
    
-    \medskip
-    {\large \bf Programming Assignment #1 Writeup}\\
+    %\medskip
+    %{\large \bf Programming Assignment #1 Writeup}\\
    
-    \medskip
-    {\sf Due: #2\\
+    %\medskip
+    %{\sf Due: #2\\
      %\printStudentName
      %\printCollaboration
-    } % end of \sf
+    %} % end of \sf
 %    \setlength{\parskip}{\theparskip}
    
     \end{center}
